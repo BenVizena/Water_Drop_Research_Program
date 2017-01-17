@@ -117,8 +117,13 @@ public class DropGui extends Application{
 		Button startButton = new Button("Start");
 		startButton.setOnAction(e -> {
 			try {
-				startButtonClicked(runNameTF.getText(), pathToVideoTF.getText(), outputPathTF.getText(), pathToScaleImageTF.getText(),
-						startTimeTF.getText(), endTimeTF.getText(), sideRB.isSelected());
+				try {
+					startButtonClicked(runNameTF.getText(), pathToVideoTF.getText(), outputPathTF.getText(), pathToScaleImageTF.getText(),
+							startTimeTF.getText(), endTimeTF.getText(), sideRB.isSelected());
+				} catch (org.bytedeco.javacv.FrameGrabber.Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			} catch (IOException e1) {
 			}
 		});
