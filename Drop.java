@@ -35,6 +35,7 @@ public class Drop{
 	/*
 	 * these declarations are setting up the "important" zone on the Buffered Image.  The important zone is everywhere the drop might be.
 	 */
+<<<<<<< HEAD
 	/*
 	private final static int minImportantX=1;//450
 	private final static int maxImportantX=1800;//1180
@@ -48,6 +49,13 @@ public class Drop{
 	private static int maxImportantX;
 	private static int minImportantY;
 	private static int maxImportantY;
+=======
+	private final static int minImportantX=450;
+	private final static int maxImportantX=1180;//
+	private final static int minImportantY=330;
+	private final static int maxImportantY=550;//950
+	private final static int gradientThreshold=115;//140
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	
 	/*
 	 * drives the drop class.  Accepts the filepath to the drop image, the run info (specified through cmd line arguments), the start time of the run, and the frame number
@@ -69,6 +77,7 @@ public class Drop{
 			e1.printStackTrace();
 		}
 
+<<<<<<< HEAD
 		minImportantX=250;
 		maxImportantX=img.getWidth()-1000;
 		minImportantY=250;
@@ -78,6 +87,12 @@ public class Drop{
 		
 		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		System.out.println("MARKED EDGES");
+=======
+
+		
+		
+		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 		blueLine = findLine(img);		
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
@@ -118,8 +133,11 @@ public class Drop{
 	 * 
 	 * This method fails if blueLine does not properly mark the surface that the drop sits on.
 	 */
+<<<<<<< HEAD
 	
 	/*
+=======
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	private static int[] findRightContactPoint(BufferedImage bi){
 		int[] point={-1,-1};
 		Graphics2D g = bi.createGraphics();
@@ -138,6 +156,7 @@ public class Drop{
 		}
 		return point;
 	}
+<<<<<<< HEAD
 	*/
 	
 	private static int[] findRightContactPoint(BufferedImage bi){
@@ -160,6 +179,8 @@ public class Drop{
 		}
 		return point;
 	}
+=======
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	
 
 	/*

@@ -3,17 +3,24 @@ import java.util.Random;
 
 public class Scaler {
 	
+<<<<<<< HEAD
 	private final static int minImportantX=450;
 	private final static int maxImportantX=1180;//
 	private final static int minImportantY=330;
 	private final static int maxImportantY=550;//950
 	private final static int gradientThreshold=90;//140
+=======
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	
 	public Scaler(){
 	}
 	
 	public static int getScale(BufferedImage img){//returns number of pixels in one centimeter
+<<<<<<< HEAD
 		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+=======
+		img = SobelOperator.markEdges(img, 100);
+>>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 		
 		Random rnd = new Random();
 		
