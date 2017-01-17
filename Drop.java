@@ -35,27 +35,19 @@ public class Drop{
 	/*
 	 * these declarations are setting up the "important" zone on the Buffered Image.  The important zone is everywhere the drop might be.
 	 */
-<<<<<<< HEAD
 	/*
 	private final static int minImportantX=1;//450
 	private final static int maxImportantX=1800;//1180
 	private final static int minImportantY=1;//330
 	private final static int maxImportantY=1070;//550
 	*/
-	private final static int gradientThreshold=110;//70
+	private final static int gradientThreshold=80;//70
 	
 	
 	private static int minImportantX;
 	private static int maxImportantX;
 	private static int minImportantY;
 	private static int maxImportantY;
-=======
-	private final static int minImportantX=450;
-	private final static int maxImportantX=1180;//
-	private final static int minImportantY=330;
-	private final static int maxImportantY=550;//950
-	private final static int gradientThreshold=115;//140
->>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	
 	/*
 	 * drives the drop class.  Accepts the filepath to the drop image, the run info (specified through cmd line arguments), the start time of the run, and the frame number
@@ -77,8 +69,7 @@ public class Drop{
 			e1.printStackTrace();
 		}
 
-<<<<<<< HEAD
-		minImportantX=250;
+		minImportantX=600;
 		maxImportantX=img.getWidth()-1000;
 		minImportantY=250;
 		maxImportantY=img.getHeight()-250;
@@ -86,13 +77,11 @@ public class Drop{
 		
 		
 		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
-		System.out.println("MARKED EDGES");
-=======
+//		System.out.println("MARKED EDGES");
 
 		
 		
-		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
->>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
+	//	img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		blueLine = findLine(img);		
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
@@ -133,7 +122,6 @@ public class Drop{
 	 * 
 	 * This method fails if blueLine does not properly mark the surface that the drop sits on.
 	 */
-<<<<<<< HEAD
 	
 	/*
 =======
@@ -166,7 +154,7 @@ public class Drop{
 		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
 			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y-1)==255){//then check to see if the pixel below is red    was y+1
+					if(SobelOperator.getRedValue(bi, x, y-2)==255){//then check to see if the pixel below is red    was y+1
 						if(SobelOperator.getRedValue(bi,x,y+1)==255){
 							point[0]=x;//if it is
 							point[1]=y-1;//you have found the right edge
@@ -179,9 +167,6 @@ public class Drop{
 		}
 		return point;
 	}
-=======
->>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
-	
 
 	/*
 	 * finds the point where the drop makes it's leftmost contact with the surface.
@@ -199,11 +184,13 @@ public class Drop{
 		for(int x=minImportantX+10;x<maxImportantX-10;x++){//raster over
 			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y-1)==255){//then check to see if the pixel below is red    was y+1
-						point[0]=x;//if it is
-						point[1]=y-1;//you have found the right edge
-						x=maxImportantX;
-						y=maxImportantY;
+					if(SobelOperator.getRedValue(bi, x, y+1)==255){//then check to see if the pixel below is red    was y+1
+						if(SobelOperator.getRedValue(bi, x, y-2)==255){
+							point[0]=x;//if it is
+							point[1]=y-1;//you have found the right edge
+							x=maxImportantX;
+							y=maxImportantY;
+						}
 					}								
 				}			
 			}
