@@ -119,7 +119,7 @@ public class DropGui extends Application{
 			try {
 				startButtonClicked(runNameTF.getText(), pathToVideoTF.getText(), outputPathTF.getText(), pathToScaleImageTF.getText(),
 						startTimeTF.getText(), endTimeTF.getText(), sideRB.isSelected());
-			} catch (IOException e1) {
+			} catch (IOException | org.bytedeco.javacv.FrameGrabber.Exception e1) {
 			}
 		});
 		
