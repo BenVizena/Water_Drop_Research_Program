@@ -114,18 +114,8 @@ public class Drop{
 		return filePath;
 	}
 	
-	/*
-	 * finds the point where the drop makes it's rightmost contact with the surface.
-	 * 
-	 * follows the blue line made by imposing blueLine on to the image. (blueLine is the surface that the drop is sitting on.)
-	 * once a red pixel is found 1 pixel above the blue line, identify that pixel as the rightmost contact point.
-	 * 
-	 * This method fails if blueLine does not properly mark the surface that the drop sits on.
-	 */
+
 	
-	/*
-=======
->>>>>>> f79fd905869ca4f07bdb5e4fb91662d3a9e07bec
 	private static int[] findRightContactPoint(BufferedImage bi){
 		int[] point={-1,-1};
 		Graphics2D g = bi.createGraphics();
@@ -134,32 +124,17 @@ public class Drop{
 			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
 					if(SobelOperator.getRedValue(bi, x, y-1)==255){//then check to see if the pixel below is red    was y+1
-						point[0]=x;//if it is
-						point[1]=y-1;//you have found the right edge
-						x=-1;
-						y=maxImportantY;
-					}								
-				}			
-			}
-		}
-		return point;
-	}
-<<<<<<< HEAD
-	*/
-	
-	private static int[] findRightContactPoint(BufferedImage bi){
-		int[] point={-1,-1};
-		Graphics2D g = bi.createGraphics();
-		g.setColor(new Color(255,165,0));
-		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
-			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
-				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y-2)==255){//then check to see if the pixel below is red    was y+1
 						if(SobelOperator.getRedValue(bi,x,y+1)==255){
-							point[0]=x;//if it is
-							point[1]=y-1;//you have found the right edge
-							x=-1;
-							y=maxImportantY;
+							boolean isOnDrop = false;
+							for(int rasterX = x; rasterX > x-5;rasterX--)
+								if(SobelOperator.getRedValue(bi, rasterX, y-5)==255)
+									isOnDrop = true;
+							if(isOnDrop){
+								point[0]=x;//if it is
+								point[1]=y-1;//you have found the right edge
+								x=-1;
+								y=maxImportantY;
+							}
 						}
 					}								
 				}			
@@ -182,14 +157,21 @@ public class Drop{
 		Graphics2D g = bi.createGraphics();
 		g.setColor(new Color(255,165,0));
 		for(int x=minImportantX+10;x<maxImportantX-10;x++){//raster over
-			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
+			for(int y=minImportantY+16;y<maxImportantY-16;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
 					if(SobelOperator.getRedValue(bi, x, y+1)==255){//then check to see if the pixel below is red    was y+1
-						if(SobelOperator.getRedValue(bi, x, y-2)==255){
-							point[0]=x;//if it is
-							point[1]=y-1;//you have found the right edge
-							x=maxImportantX;
-							y=maxImportantY;
+						if(SobelOperator.getRedValue(bi, x, y-1)==255){
+							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
+							boolean isOnDrop = false;
+							for(int rasterX = x; rasterX < x+5; rasterX++)
+								if(SobelOperator.getRedValue(bi, rasterX, y-5)==255)
+									isOnDrop = true;
+							if(isOnDrop){
+								point[0]=x;//if it is
+								point[1]=y-1;//you have found the right edge
+								x=maxImportantX;
+								y=maxImportantY;
+							}
 						}
 					}								
 				}			
