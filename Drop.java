@@ -41,7 +41,7 @@ public class Drop{
 	private final static int minImportantY=1;//330
 	private final static int maxImportantY=1070;//550
 	*/
-	private final static int gradientThreshold=80;//70
+	private final static int gradientThreshold=85;//80
 	
 	
 	private static int minImportantX;
@@ -69,10 +69,10 @@ public class Drop{
 			e1.printStackTrace();
 		}
 
-		minImportantX=600;
-		maxImportantX=img.getWidth()-1000;
-		minImportantY=250;
-		maxImportantY=img.getHeight()-250;
+		minImportantX=600;//600
+		maxImportantX=img.getWidth()-800;//-1000
+		minImportantY=250;//250
+		maxImportantY=img.getHeight()-250;//-250
 		
 		
 		
@@ -217,6 +217,7 @@ public class Drop{
 	 * 
 	 * TODO: make this use multiple points to construct a line of best fit. (need to update Lines to allow this)
 	 */
+	/*
 	private Lines findRightLine(BufferedImage bi){
 		int[] p1 = findRightContactPoint(bi);//finds point 1
 		int y = p1[1]-10;
@@ -224,6 +225,23 @@ public class Drop{
 		int[] p2 = {x,y};//makes point 2
 		Lines line = new Lines(p1,p2);
 		return line;
+	}
+	*/
+	private Lines findRightLine(BufferedImage bi){
+		int[] p1 = findRightContactPoint(bi);//finds point 1
+		
+		Lines lineGroup[] = new Lines[10];
+		
+		
+		for(int i=5;i<=14;i++){
+			int thisPoint[] = {scanFromRight(bi,p1[1]-i),p1[1]-i};
+			lineGroup[i-5] = new Lines(p1,thisPoint);
+		}
+		
+		double avgM = Lines.getAverageSlope(lineGroup);
+		
+		
+		return new Lines(p1,avgM);
 	}
 	
 	/*
@@ -253,11 +271,12 @@ public class Drop{
 		return xPoint;
 	}
 	
-	private static int scanFromLeft(BufferedImage bi, int y2, int x1){
+	private static int scanFromLeft(BufferedImage bi, int y2, int x1){//y2 is the height that you will scan in at.  x1 is a term that speeds things up.  you basically set the x point at which you start scanning
 		int x2=x1-20;
 		for(int x=x2;x<maxImportantX;x++){
 			if(SobelOperator.getRedValue(bi, x, y2)==255){
 				x2=x;
+				x+=maxImportantX;
 				break;
 			}
 		}
@@ -270,6 +289,7 @@ public class Drop{
 	 * 
 	 * TODO: make this use multiple points to construct a line of best fit. (need to update Lines to allow this)
 	 */
+	/*
 	private Lines findLeftLine(BufferedImage bi){
 		int points[]=findLeftContactPoint(bi);
 //		System.out.println("["+points[0]+", "+points[1]+"]");
@@ -279,6 +299,23 @@ public class Drop{
 		Lines line = new Lines(points,p2);
 		
 		return line;
+	}
+	*/
+	
+	private Lines findLeftLine(BufferedImage bi){
+		int points[]=findLeftContactPoint(bi);
+		
+		Lines lineGroup[] = new Lines[10];
+		
+		for(int i=5;i<=14;i++){
+			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
+			lineGroup[i-5] = new Lines(points,thisPoint);
+			System.out.println(lineGroup[i-5].getM());
+		}
+			
+		double avgM = Lines.getAverageSlope(lineGroup);
+		
+		return new Lines(points,avgM);
 	}
 	
 	/*

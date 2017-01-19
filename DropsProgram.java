@@ -36,7 +36,8 @@ public class DropsProgram{
     	Path destinationPath=Paths.get(outPath).toAbsolutePath();   //the file path of the destination
 		
 		Java2DFrameConverter fc = new Java2DFrameConverter();
-    	FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(mp4Path+"");//this takes several seconds for some reason.
+    	@SuppressWarnings("resource")
+		FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(mp4Path+"");//this takes several seconds for some reason.
     	
     	frameGrabber.start();
     	frameGrabber.setFrameNumber((int)Math.floor(startTime*60));//sets the images to start being pulled at the specified start time.

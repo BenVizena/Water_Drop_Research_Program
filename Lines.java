@@ -52,6 +52,15 @@ public class Lines {
 		return angle;
 	}
 	
+	public static double getAverageSlope(Lines[] lines){
+		double sumSlope = 0;
+		
+		for(int x=0;x<lines.length;x++)
+			sumSlope += lines[x].getM();
+		
+		return sumSlope/lines.length;
+	}
+	
 
 	
 	
