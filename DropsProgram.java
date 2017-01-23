@@ -26,7 +26,8 @@ public class DropsProgram{
 	
 	private static int pixelsPerCentimeter;
 	
-	public static void runProgram(String runName, String vidPath, String outPath, String scalePathInput, String startTimeText, String endTimeText, boolean sideView) throws Exception, IOException{
+	public static void runProgram(String runName, String vidPath, String outPath, String scalePathInput, String startTimeText, String endTimeText, boolean sideViewTop,
+			boolean sideViewBot, String rightPlatformY, String leftPlatformY, String intensityCutoff, String rightPlatformX, String leftPlatformX) throws Exception, IOException{
 		double startTime = Double.parseDouble(startTimeText);
 		double endTime = Double.parseDouble(endTimeText);
 		
@@ -48,8 +49,14 @@ public class DropsProgram{
     	pixelsPerCentimeter = Scaler.getScale(scaleImage);
     	
     	
-    	if(sideView){
+    	
+    	if(sideViewTop){
     		Drop[] drops = new Drop[numFrames];
+    		int rightPlatformYInt = Integer.parseInt(rightPlatformY);
+        	int leftPlatformYInt = Integer.parseInt(leftPlatformY);
+        	int rightPlatformXInt = Integer.parseInt(rightPlatformX);
+        	int leftPlatformXInt = Integer.parseInt(leftPlatformX);
+        	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
     		
     		for (int i = 0; i < numFrames; i++) {
             	try{
@@ -58,7 +65,7 @@ public class DropsProgram{
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
             		File filePath = new File(destinationPath+"\\d"+nameNumber+".png");
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
-            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter);//creates drop.
+            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt);//creates drop.
             		bi.flush();
             	}
             	catch(Exception e){
@@ -82,7 +89,7 @@ public class DropsProgram{
                 System.out.println("DONE");
             }
     	}
-    	else{
+    	else if(!sideViewBot){//if not sideViewTop or sideViewBot, then it is topView.
     		TopDrop[] drops = new TopDrop[numFrames];
     		
     		for (int i = 0; i < numFrames; i++) {

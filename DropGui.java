@@ -36,7 +36,7 @@ public class DropGui extends Application{
 		window.setTitle("The Large Drop Collider's Digital Pal");
 		
 		BorderPane root = new BorderPane();
-		Scene scene = new Scene(root, 800,405);
+		Scene scene = new Scene(root, 800,465);
 
 		
 ////////////////// Start Construction of GridPane ////////////////////////////		
@@ -64,6 +64,8 @@ public class DropGui extends Application{
 		Label leftPlatformYPointLabel = new Label ("Left Platform Y Value: ");
 		Label rightPlatformYPointLabel = new Label ("Right Platform Y Value: ");
 		Label intensityCutoffLabel = new Label ("Line Threshold (1-155): ");
+		Label leftPlatformXPointLabel = new Label ("Left Platform X Value: ");
+		Label rightPlatformXPointLabel = new Label ("Right Platform X Value: ");
 		
 		TextField runNameTF = new TextField();
 		TextField pathToVideoTF = new TextField();
@@ -76,6 +78,8 @@ public class DropGui extends Application{
 		TextField leftPlatformYPointTF = new TextField();
 		TextField rightPlatformYPointTF = new TextField();
 		TextField intensityCutoffTF = new TextField();
+		TextField leftPlatformXPointTF = new TextField();
+		TextField rightPlatformXPointTF = new TextField();
 		
 		
 		
@@ -103,14 +107,20 @@ public class DropGui extends Application{
 		gridpane.add(endTimeLabel, 0, 7);
 		gridpane.add(endTimeTF, 1, 7);
 		
-		gridpane.add(leftPlatformYPointLabel, 0, 8);
-		gridpane.add(leftPlatformYPointTF, 1, 8);
+		gridpane.add(leftPlatformXPointLabel, 0, 8);
+		gridpane.add(leftPlatformXPointTF, 1, 8);
 		
-		gridpane.add(rightPlatformYPointLabel, 0, 9);
-		gridpane.add(rightPlatformYPointTF, 1, 9);
+		gridpane.add(leftPlatformYPointLabel, 0, 9);
+		gridpane.add(leftPlatformYPointTF, 1, 9);
+
+		gridpane.add(rightPlatformXPointLabel, 0, 10);
+		gridpane.add(rightPlatformXPointTF, 1, 10);
 		
-		gridpane.add(intensityCutoffLabel, 0, 10);
-		gridpane.add(intensityCutoffTF, 1, 10);
+		gridpane.add(rightPlatformYPointLabel, 0, 11);
+		gridpane.add(rightPlatformYPointTF, 1, 11);
+		
+		gridpane.add(intensityCutoffLabel, 0, 12);
+		gridpane.add(intensityCutoffTF, 1, 12);
 		
 /////////////////////// End Construction of GridPane ////////////////////
 		
@@ -136,7 +146,8 @@ public class DropGui extends Application{
 			try {
 				try {
 					startButtonClicked(runNameTF.getText(), pathToVideoTF.getText(), outputPathTF.getText(), pathToScaleImageTF.getText(),
-							startTimeTF.getText(), endTimeTF.getText(), sideTopRB.isSelected());
+							startTimeTF.getText(), endTimeTF.getText(), sideTopRB.isSelected(), sideBotRB.isSelected(), rightPlatformYPointTF.getText(), leftPlatformYPointTF.getText(),
+							intensityCutoffTF.getText(), rightPlatformXPointTF.getText(), leftPlatformXPointTF.getText());
 				} catch (org.bytedeco.javacv.FrameGrabber.Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -154,9 +165,10 @@ public class DropGui extends Application{
 
 	}
 	
-	private void startButtonClicked(String runName, String vidPath, String outPath, String scalePath, String startTime, String endTime, boolean sideView) throws org.bytedeco.javacv.FrameGrabber.Exception, IOException{
+	private void startButtonClicked(String runName, String vidPath, String outPath, String scalePath, String startTime, String endTime, boolean sideView,
+			boolean sideViewBot, String rightPlatformY, String leftPlatformY, String intensityCutoff, String rightPlatformX, String leftPlatformX) throws org.bytedeco.javacv.FrameGrabber.Exception, IOException{
 		//if none of the inputs are null run dropsprogram
-		DropsProgram.runProgram(runName, vidPath, outPath, scalePath, startTime, endTime, sideView);
+		DropsProgram.runProgram(runName, vidPath, outPath, scalePath, startTime, endTime, sideView, sideViewBot, rightPlatformY, leftPlatformY, intensityCutoff, rightPlatformX, leftPlatformX);
 	}
 
 }

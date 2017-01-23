@@ -41,24 +41,31 @@ public class Drop{
 	private final static int minImportantY=1;//330
 	private final static int maxImportantY=1070;//550
 	*/
-	private final static int gradientThreshold=85;//80
+//	private final static int gradientThreshold=85;//80
 	
 	
 	private static int minImportantX;
 	private static int maxImportantX;
 	private static int minImportantY;
 	private static int maxImportantY;
+//	private static int leftPlatformY;
+//	private static int rightPlatformY;
+//	private static int gradientThreshold;
 	
 	/*
 	 * drives the drop class.  Accepts the filepath to the drop image, the run info (specified through cmd line arguments), the start time of the run, and the frame number
 	 * (used to calculate the time that the frame happened).
 	 */
-	public Drop(File filePath,String runInfo,double time, double frameNumber, int pixelsPerCentimeter){
+	public Drop(File filePath,String runInfo,double time, double frameNumber, int pixelsPerCentimeter, int leftPlatformY, int rightPlatformY, int gradientThreshold,
+			int leftPlatformX, int rightPlatformX){
 		startTime = time;
 		this.time=time+(double)(frameNumber/60);
 		this.runInfo=runInfo;//update with angles and width.  
 		this.filePath=filePath;
 		this.pixelsPerCentimeter=pixelsPerCentimeter;
+//		int leftPlatformY = leftPlatformYin;
+//		int intrightPlatformY= rightPlatformYin;
+//		int gradientThreshold = gradientThresholdin;
 
 
 		//makes a Buffered Image from the file at the filePath.
@@ -82,7 +89,8 @@ public class Drop{
 		
 		
 	//	img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
-		blueLine = findLine(img);		
+	//	blueLine = findLine(img);	
+		blueLine = findLine(img,leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
 		xL=leftDropLine.getX1()/pixelsPerCentimeter;
@@ -112,6 +120,17 @@ public class Drop{
 	 */
 	public File getImageFP(){
 		return filePath;
+	}
+	
+	private static Lines findLine(BufferedImage bi, int leftPlatformX, int leftPlatformY, int rightPlatformX, int rightPlatformY){
+		Graphics2D g = bi.createGraphics();
+		g.setColor(Color.BLUE);
+		g.drawLine(leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);
+		
+		int[] p1 = {leftPlatformX, leftPlatformY};
+		int[] p2 = {rightPlatformX, rightPlatformY};
+		
+		return new Lines(p1,p2);
 	}
 	
 
