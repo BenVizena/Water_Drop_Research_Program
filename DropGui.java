@@ -36,7 +36,7 @@ public class DropGui extends Application{
 		window.setTitle("The Large Drop Collider's Digital Pal");
 		
 		BorderPane root = new BorderPane();
-		Scene scene = new Scene(root, 800,400);
+		Scene scene = new Scene(root, 800,405);
 
 		
 ////////////////// Start Construction of GridPane ////////////////////////////		
@@ -46,7 +46,7 @@ public class DropGui extends Application{
 		gridpane.setPadding(new Insets(5));
 		gridpane.setHgap(5);
 		gridpane.setVgap(5);
-		ColumnConstraints column1 = new ColumnConstraints(125);
+		ColumnConstraints column1 = new ColumnConstraints(126);
 		ColumnConstraints column2 = new ColumnConstraints(50,150,655);
 		column1.setHgrow(Priority.ALWAYS);
 		column2.setHgrow(Priority.ALWAYS);
@@ -61,6 +61,9 @@ public class DropGui extends Application{
 		Label endTimeLabel = new Label("End Time: ");
 		Label outputPathLabel = new Label("Output Path: ");
 		Label pathToScaleImageLabel = new Label("Path to Scale Image: ");
+		Label leftPlatformYPointLabel = new Label ("Left Platform Y Value: ");
+		Label rightPlatformYPointLabel = new Label ("Right Platform Y Value: ");
+		Label intensityCutoffLabel = new Label ("Line Threshold (1-155): ");
 		
 		TextField runNameTF = new TextField();
 		TextField pathToVideoTF = new TextField();
@@ -70,6 +73,9 @@ public class DropGui extends Application{
 		TextField endTimeTF = new TextField();
 		TextField outputPathTF = new TextField();
 		TextField pathToScaleImageTF = new TextField();
+		TextField leftPlatformYPointTF = new TextField();
+		TextField rightPlatformYPointTF = new TextField();
+		TextField intensityCutoffTF = new TextField();
 		
 		
 		
@@ -97,20 +103,31 @@ public class DropGui extends Application{
 		gridpane.add(endTimeLabel, 0, 7);
 		gridpane.add(endTimeTF, 1, 7);
 		
+		gridpane.add(leftPlatformYPointLabel, 0, 8);
+		gridpane.add(leftPlatformYPointTF, 1, 8);
+		
+		gridpane.add(rightPlatformYPointLabel, 0, 9);
+		gridpane.add(rightPlatformYPointTF, 1, 9);
+		
+		gridpane.add(intensityCutoffLabel, 0, 10);
+		gridpane.add(intensityCutoffTF, 1, 10);
+		
 /////////////////////// End Construction of GridPane ////////////////////
 		
 ////////////////////// Begin Construction of RadioGroup ////////////////
 		
 		ToggleGroup group = new ToggleGroup();
 		
-		RadioButton sideRB = new RadioButton("Side View");
+		RadioButton sideTopRB = new RadioButton("Side View (On Top)");
 		RadioButton topRB = new RadioButton("Top View");
+		RadioButton sideBotRB = new RadioButton("Side View (On Bottom)");
 		
-		sideRB.setToggleGroup(group);
+		sideTopRB.setToggleGroup(group);
 		topRB.setToggleGroup(group);
+		sideBotRB.setToggleGroup(group);
 		
 		VBox viewTypeRB = new VBox(5);
-		viewTypeRB.getChildren().addAll(sideRB, topRB);
+		viewTypeRB.getChildren().addAll(sideTopRB, sideBotRB, topRB);
 		
 ////////////////////// End Construction of RadioGroup //////////////////	
 		
@@ -119,7 +136,7 @@ public class DropGui extends Application{
 			try {
 				try {
 					startButtonClicked(runNameTF.getText(), pathToVideoTF.getText(), outputPathTF.getText(), pathToScaleImageTF.getText(),
-							startTimeTF.getText(), endTimeTF.getText(), sideRB.isSelected());
+							startTimeTF.getText(), endTimeTF.getText(), sideTopRB.isSelected());
 				} catch (org.bytedeco.javacv.FrameGrabber.Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
