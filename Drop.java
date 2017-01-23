@@ -32,25 +32,13 @@ public class Drop{
 	private int pixelsPerCentimeter;
 	
 	
-	/*
-	 * these declarations are setting up the "important" zone on the Buffered Image.  The important zone is everywhere the drop might be.
-	 */
-	/*
-	private final static int minImportantX=1;//450
-	private final static int maxImportantX=1800;//1180
-	private final static int minImportantY=1;//330
-	private final static int maxImportantY=1070;//550
-	*/
-//	private final static int gradientThreshold=85;//80
+
 	
 	
 	private static int minImportantX;
 	private static int maxImportantX;
 	private static int minImportantY;
 	private static int maxImportantY;
-//	private static int leftPlatformY;
-//	private static int rightPlatformY;
-//	private static int gradientThreshold;
 	
 	/*
 	 * drives the drop class.  Accepts the filepath to the drop image, the run info (specified through cmd line arguments), the start time of the run, and the frame number
@@ -63,9 +51,6 @@ public class Drop{
 		this.runInfo=runInfo;//update with angles and width.  
 		this.filePath=filePath;
 		this.pixelsPerCentimeter=pixelsPerCentimeter;
-//		int leftPlatformY = leftPlatformYin;
-//		int intrightPlatformY= rightPlatformYin;
-//		int gradientThreshold = gradientThresholdin;
 
 
 		//makes a Buffered Image from the file at the filePath.
@@ -84,12 +69,8 @@ public class Drop{
 		
 		
 		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
-//		System.out.println("MARKED EDGES");
 
 		
-		
-	//	img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
-	//	blueLine = findLine(img);	
 		blueLine = findLine(img,leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
@@ -199,35 +180,7 @@ public class Drop{
 		return point;
 	}
 
-	/*
-	 * this method finds blueLine (the line that shows where on the platform the drop is sitting.
-	 * it does this by finding the slope of the bottom of the platform (which is not blurry for some reason) and then making a Lines object out of that slope
-	 * and the point found by findLeftContactPoint.
-	 * 
-	 * TODO: make this use multiple point samples from both sides to construct a line of best fit.  (need to update Lines to allow for this)
-	 */
-	private static Lines findLine(BufferedImage bi){
-		Graphics2D g = bi.createGraphics();
-		int y1=-1;
-		int y2=-1;
-		for(int y=minImportantY;y<maxImportantY;y++)
-			if(SobelOperator.getRedValue(bi, minImportantX+60, y)==255){//finds a y value on the left side of the platform edge (at a specified x)
-				y1=y;
-				y+=maxImportantY+50;
-			}
-		for(int y=minImportantY;y<maxImportantY;y++)
-			if(SobelOperator.getRedValue(bi, maxImportantX-20, y)==255){//finds a y value on the right side of the platform edge (at a specified x)
-				y2=y;
-				y+=maxImportantY+50;
-			}
-		int p1[]={minImportantX+60,y1};//constructs point on left side.
-		int p2[]={maxImportantX-10,y2};//constructs point on right side.
-		Lines line = new Lines(p1,p2);// makes a Lines object between the two points.
-		g.setColor(Color.BLUE);
-		g.drawLine(line.getX1(), line.getY1(), line.getX2(), line.getY2());
-		
-		return line;//was line2
-	}
+
 
 	/*
 	 * makes the line that follows the edge of the right side of the drop.
@@ -236,16 +189,8 @@ public class Drop{
 	 * 
 	 * TODO: make this use multiple points to construct a line of best fit. (need to update Lines to allow this)
 	 */
-	/*
-	private Lines findRightLine(BufferedImage bi){
-		int[] p1 = findRightContactPoint(bi);//finds point 1
-		int y = p1[1]-10;
-		int x= scanFromRight(bi,y);//looks for red pixel 10 pixels up from p1.
-		int[] p2 = {x,y};//makes point 2
-		Lines line = new Lines(p1,p2);
-		return line;
-	}
-	*/
+	
+
 	private Lines findRightLine(BufferedImage bi){
 		int[] p1 = findRightContactPoint(bi);//finds point 1
 		
@@ -308,19 +253,6 @@ public class Drop{
 	 * 
 	 * TODO: make this use multiple points to construct a line of best fit. (need to update Lines to allow this)
 	 */
-	/*
-	private Lines findLeftLine(BufferedImage bi){
-		int points[]=findLeftContactPoint(bi);
-//		System.out.println("["+points[0]+", "+points[1]+"]");
-		int y2 = points[1]-5;
-		int x2 = scanFromLeft(bi,y2,points[0]);
-		int[] p2 = {x2,y2};
-		Lines line = new Lines(points,p2);
-		
-		return line;
-	}
-	*/
-	
 	private Lines findLeftLine(BufferedImage bi){
 		int points[]=findLeftContactPoint(bi);
 		
