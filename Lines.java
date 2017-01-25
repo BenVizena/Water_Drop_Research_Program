@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*
  * Class allows for the creation of lines.  Lines can then be compared to find the angle between them with getAngleDegrees(Lines, Lines).
  * 
@@ -52,13 +54,13 @@ public class Lines {
 		return angle;
 	}
 	
-	public static double getAverageSlope(Lines[] lines){
+	public static double getAverageSlope(ArrayList<Lines> lines){
 		double sumSlope = 0;
 		
-		for(int x=0;x<lines.length;x++)
-			sumSlope += lines[x].getM();
+		for(int x=0;x<lines.size();x++)
+			sumSlope += lines.get(x).getM();
 		
-		return sumSlope/lines.length;
+		return sumSlope/lines.size();
 	}
 	
 

@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -123,7 +124,7 @@ public class Drop{
 		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
 			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y-1)==255){//then check to see if the pixel below is red    was y+1
+					if(SobelOperator.getRedValue(bi, x, y-2)==255){//then check to see if the pixel below is red    was y+1
 						if(SobelOperator.getRedValue(bi,x,y+1)==255){
 							boolean isOnDrop = false;
 							for(int rasterX = x; rasterX > x-5;rasterX--)
@@ -160,7 +161,7 @@ public class Drop{
 			for(int y=minImportantY+16;y<maxImportantY-16;y++){//the image
 				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
 					if(SobelOperator.getRedValue(bi, x, y+1)==255){//then check to see if the pixel below is red    was y+1
-						if(SobelOperator.getRedValue(bi, x, y-1)==255){
+						if(SobelOperator.getRedValue(bi, x, y-2)==255){
 							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
 							boolean isOnDrop = false;
 							for(int rasterX = x; rasterX < x+5; rasterX++)
@@ -194,12 +195,13 @@ public class Drop{
 	private Lines findRightLine(BufferedImage bi){
 		int[] p1 = findRightContactPoint(bi);//finds point 1
 		
-		Lines lineGroup[] = new Lines[10];
+//		Lines lineGroup[] = new Lines[10];
+		ArrayList<Lines> lineGroup = new ArrayList<>();
 		
 		
 		for(int i=5;i<=14;i++){
-			int thisPoint[] = {scanFromRight(bi,p1[1]-i),p1[1]-i};
-			lineGroup[i-5] = new Lines(p1,thisPoint);
+			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]),p1[1]-i};
+			lineGroup.add(new Lines(p1,thisPoint));
 		}
 		
 		double avgM = Lines.getAverageSlope(lineGroup);
@@ -220,6 +222,27 @@ public class Drop{
 		Graphics2D g = bi.createGraphics();
 		g.setColor(new Color(157,235,233));
 		for(int x=maxImportantX-10;x>minImportantX;x--){//rasters from right to left
+			try{
+				if(SobelOperator.getRedValue(bi, x, y)==255){//looking for a red pixel
+				xPoint=x;
+				g.drawLine(x, y, x, y);
+				x-=maxImportantX;
+				goodData=true;
+				break;
+				}
+			}catch(Exception e){
+				
+			}	
+		}	
+		return xPoint;
+	}
+	
+	private static int scanFromRight(BufferedImage bi, int y, int startX){
+		
+		int xPoint=-1;
+		Graphics2D g = bi.createGraphics();
+		g.setColor(new Color(157,235,233));
+		for(int x=startX;x>minImportantX;x--){//rasters from right to left
 			try{
 				if(SobelOperator.getRedValue(bi, x, y)==255){//looking for a red pixel
 				xPoint=x;
@@ -256,12 +279,12 @@ public class Drop{
 	private Lines findLeftLine(BufferedImage bi){
 		int points[]=findLeftContactPoint(bi);
 		
-		Lines lineGroup[] = new Lines[10];
+		ArrayList<Lines> lineGroup = new ArrayList<>();
 		
 		for(int i=5;i<=14;i++){
 			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
-			lineGroup[i-5] = new Lines(points,thisPoint);
-			System.out.println(lineGroup[i-5].getM());
+			lineGroup.add(new Lines(points,thisPoint));
+		//	System.out.println(lineGroup[i-5].getM());
 		}
 			
 		double avgM = Lines.getAverageSlope(lineGroup);
