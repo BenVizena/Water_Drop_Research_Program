@@ -62,10 +62,10 @@ public class Drop{
 			e1.printStackTrace();
 		}
 
-		minImportantX=600;//600
-		maxImportantX=img.getWidth()-800;//-1000
-		minImportantY=250;//250
-		maxImportantY=img.getHeight()-250;//-250
+		minImportantX=leftPlatformX-1;//600
+		maxImportantX=rightPlatformX+1;//img.getWidth()-800
+		minImportantY=leftPlatformY-60;//250
+		maxImportantY=rightPlatformY+30;//img.getHeight()-250
 		
 		
 		
@@ -216,27 +216,6 @@ public class Drop{
 	 * if it finds a red pixel, we call the data good.
 	 * if it does not find a pixel (maybe the drop was too blurry because it was moving) goodData remains false.
 	 */
-	private static int scanFromRight(BufferedImage bi, int y){
-		
-		int xPoint=-1;
-		Graphics2D g = bi.createGraphics();
-		g.setColor(new Color(157,235,233));
-		for(int x=maxImportantX-10;x>minImportantX;x--){//rasters from right to left
-			try{
-				if(SobelOperator.getRedValue(bi, x, y)==255){//looking for a red pixel
-				xPoint=x;
-				g.drawLine(x, y, x, y);
-				x-=maxImportantX;
-				goodData=true;
-				break;
-				}
-			}catch(Exception e){
-				
-			}	
-		}	
-		return xPoint;
-	}
-	
 	private static int scanFromRight(BufferedImage bi, int y, int startX){
 		
 		int xPoint=-1;
