@@ -8,6 +8,8 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +48,7 @@ public class Drop{
 	 * (used to calculate the time that the frame happened).
 	 */
 	public Drop(File filePath,String runInfo,double time, double frameNumber, int pixelsPerCentimeter, int leftPlatformY, int rightPlatformY, int gradientThreshold,
-			int leftPlatformX, int rightPlatformX){
+			int leftPlatformX, int rightPlatformX, boolean topSide){
 		startTime = time;
 		this.time=time+(double)(frameNumber/60);
 		this.runInfo=runInfo;//update with angles and width.  
@@ -61,11 +63,27 @@ public class Drop{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		
 		minImportantX=leftPlatformX-1;//600
 		maxImportantX=rightPlatformX+1;//img.getWidth()-800
 		minImportantY=leftPlatformY-60;//250
 		maxImportantY=rightPlatformY+30;//img.getHeight()-250
+		
+		if(!topSide){//if not a drop on the top, then flip the image and adjust the important area to account for the flip.
+			AffineTransform at = AffineTransform.getScaleInstance(1, -1);
+			at.translate(0, -img.getHeight(null));
+			
+			AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			img = op.filter(img, null);
+			
+			leftPlatformY = img.getHeight()-leftPlatformY;
+			rightPlatformY = img.getHeight()-rightPlatformY;
+			
+			minImportantY = leftPlatformY-30;//correcting the important area
+			maxImportantY = rightPlatformY+60;//because we just flipped the image across the horizontal center of the image.
+		}
+
+		
 		
 		
 		
@@ -104,7 +122,7 @@ public class Drop{
 		return filePath;
 	}
 	
-	private static Lines findLine(BufferedImage bi, int leftPlatformX, int leftPlatformY, int rightPlatformX, int rightPlatformY){
+	public static Lines findLine(BufferedImage bi, int leftPlatformX, int leftPlatformY, int rightPlatformX, int rightPlatformY){
 		Graphics2D g = bi.createGraphics();
 		g.setColor(Color.BLUE);
 		g.drawLine(leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);

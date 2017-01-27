@@ -50,13 +50,14 @@ public class DropsProgram{
     	
     	
     	
-    	if(sideViewTop){
+    	if(sideViewTop||sideViewBot){
     		Drop[] drops = new Drop[numFrames];
     		int rightPlatformYInt = Integer.parseInt(rightPlatformY);
         	int leftPlatformYInt = Integer.parseInt(leftPlatformY);
         	int rightPlatformXInt = Integer.parseInt(rightPlatformX);
         	int leftPlatformXInt = Integer.parseInt(leftPlatformX);
         	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
+        	
     		
     		for (int i = 0; i < numFrames; i++) {
             	try{
@@ -65,7 +66,8 @@ public class DropsProgram{
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
             		File filePath = new File(destinationPath+"\\d"+nameNumber+".png");
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
-            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt);//creates drop.
+            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt,
+            				sideViewTop);//creates drop.
             		bi.flush();
             	}
             	catch(Exception e){
@@ -89,7 +91,7 @@ public class DropsProgram{
                 System.out.println("DONE");
             }
     	}
-    	else if(!sideViewBot){//if not sideViewTop or sideViewBot, then it is topView.
+    	else{//if not sideViewTop or sideViewBot, then it is topView.
     		TopDrop[] drops = new TopDrop[numFrames];
     		
     		for (int i = 0; i < numFrames; i++) {
