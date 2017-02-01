@@ -22,11 +22,12 @@ public class TopDrop {
 	/*
 	 * these declarations are setting up the "important" zone on the Buffered Image.  The important zone is everywhere the drop might be.
 	 */
-	private final static int minImportantX=800;//800
-	private final static int maxImportantX=1200;//1200
-	private final static int minImportantY=550;//550
-	private final static int maxImportantY=950;//950
-	private final static int gradientThreshold=180;//180
+	private final static int minImportantX=644;//800
+	private final static int maxImportantX=944;//1200
+	private final static int minImportantY=600;//550
+	private final static int maxImportantY=850;//950
+//	private final static int gradientThreshold=180;//180
+	private int gradientThreshold;
 	
 	@Override
 	public String toString(){
@@ -34,7 +35,8 @@ public class TopDrop {
 	}
 	
 	
-	public TopDrop(File filePath,String runName,double time, double frameNumber, int pixelsPerCentimeter){
+	public TopDrop(File filePath,String runName,double time, double frameNumber, int pixelsPerCentimeter, int gradThresh){
+		gradientThreshold = gradThresh;
 		startTime = time;
 		this.time=time+(double)(frameNumber/60);
 		this.runName=runName;//update with angles and width.  
@@ -67,7 +69,8 @@ public class TopDrop {
 //		  area = findAreaMCsim();
 		
 		width = findWidth();
-		height = findHeight();
+//		height = findHeight();
+		height = 55;
 		
 		try {
 			ImageIO.write(img, "png", filePath);
