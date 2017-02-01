@@ -64,13 +64,14 @@ public class TopDrop {
 		
 		
 		int[] pointInDrop = findPointInDrop();
-		fillInDrop(pointInDrop);
+//		fillInDrop(pointInDrop);
+		fillInDrop();
 		area = findAreaRaster();
 //		  area = findAreaMCsim();
 		
 		width = findWidth();
-//		height = findHeight();
-		height = 55;
+		height = findHeight();
+//		height = 55;
 		
 		try {
 			ImageIO.write(img, "png", filePath);
@@ -136,6 +137,28 @@ public class TopDrop {
 			return false;
 	}
 	
+	private void fillInDrop(){
+		//raster over every point.  if it is not red, if it is between two red points, draw a line between those two points.
+		Graphics2D g = img.createGraphics();
+		g.setColor(Color.RED);
+		
+		for(int x=minImportantX;x<maxImportantX;x++){
+			for(int y=minImportantY;y<maxImportantY;y++){
+				if(SobelOperator.getRedValue(img, x, y)!=255){
+					int a = hasRedPointAbove(x,y);
+					int b = hasRedPointBelow(x,y);
+					if(a!=0 && b!=0)
+						g.drawLine(x, a, x, b);
+					
+					int l = hasRedPointLeft(x,y);
+					int r = hasRedPointRight(x,y);
+					if(l!=0 && r!=0)
+						g.drawLine(l, y, r, y);
+				}
+			}
+		}
+	}
+	
 	private void fillInDrop(int[] pointInDrop){
 		int[] blackDetection = fillInLineOfDrop(pointInDrop);//0 if no black. 1 if black above. -1 if black below.
 		
@@ -146,11 +169,11 @@ public class TopDrop {
 		boolean didStuff=false;
 			
 			
-		if(hasRedPointAbove(middleX, pointInDrop[1]) && pointInDrop[1]-1>=minImportantY && middleX > minImportantX && middleX<maxImportantX){
+		if((hasRedPointAbove(middleX, pointInDrop[1])!=0) && pointInDrop[1]-1>=minImportantY && middleX > minImportantX && middleX<maxImportantX){
 			fillInDrop(new int[]{middleX,pointInDrop[1]-1});
 			didStuff = true;
 		}
-		if(hasRedPointBelow(middleX, pointInDrop[1]) && pointInDrop[1]+1<=maxImportantY && middleX > minImportantX && middleX<maxImportantX ){
+		if((hasRedPointBelow(middleX, pointInDrop[1])!=0) && pointInDrop[1]+1<=maxImportantY && middleX > minImportantX && middleX<maxImportantX ){
 			fillInDrop(new int[]{middleX, pointInDrop[1]+1});		
 			didStuff = true;
 		}
@@ -168,30 +191,48 @@ public class TopDrop {
 		return (double)unscaledWidth/(double)pixelsPerCentimeter;
 	}
 	
-	private boolean hasRedPointAbove(int x, int y){
-		boolean foundRed = false;
-		boolean foundNotRed = false;
+	private int hasRedPointAbove(int x, int y){
+		
+		int yVal=0;
 		
 		for(int i = y;i>minImportantY;i--){
-			if(SobelOperator.getRedValue(img,x,i)!=255)
-				foundNotRed = true;	
-			if(SobelOperator.getRedValue(img, x, i)==255 && foundNotRed == true)
-				foundRed = true;
+			if(SobelOperator.getRedValue(img, x, i)==255)
+				yVal=i;
 		}
-		return foundRed;
+		return yVal;
 	}
 	
-	private boolean hasRedPointBelow(int x, int y){
-		boolean foundRed = false;
-		boolean foundNotRed = false;
+	private int hasRedPointBelow(int x, int y){
+		
+		int yVal = 0;
 		
 		for(int i=y;i<maxImportantY;i++){
-			if(SobelOperator.getRedValue(img, x, i)!=255)
-				foundNotRed = true;
-			if(SobelOperator.getRedValue(img, x, i)==255 && foundNotRed == true)
-				foundRed = true;
+			if(SobelOperator.getRedValue(img, x, i)==255)
+				yVal = i;
 		}
-		return foundRed;
+		return yVal;
+	}
+	
+private int hasRedPointLeft(int x, int y){
+		
+		int xVal=0;
+		
+		for(int i = x;i>minImportantX;i--){
+			if(SobelOperator.getRedValue(img, i, y)==255)
+				xVal=i;
+		}
+		return xVal;
+	}
+	
+	private int hasRedPointRight(int x, int y){
+		
+		int xVal = 0;
+		
+		for(int i=x;i<maxImportantX;i++){
+			if(SobelOperator.getRedValue(img, i, y)==255)
+				xVal = i;
+		}
+		return xVal;
 	}
 	
 	private int[] fillInLineOfDrop(int[] point){
@@ -228,13 +269,15 @@ public class TopDrop {
 			for(int x=minImportantX;x<maxImportantX;x++)
 				if(SobelOperator.getRedValue(img, x, y)==255){
 					minY = y;
-					y+=maxImportantY;
+		//			y+=maxImportantY;
+					break;
 				}	
 		for(int y=maxImportantY;y>minImportantY;y--)//raster from bottom up to find the lowest red pixel.
 			for(int x=minImportantX;x<maxImportantX;x++)
 				if(SobelOperator.getRedValue(img, x, y)==255){
 					maxY=y;
-					y-=maxImportantY;
+		//			y-=maxImportantY;
+					break;
 				}
 		
 		int unscaledHeight = maxY-minY;
