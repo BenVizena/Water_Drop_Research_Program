@@ -269,14 +269,12 @@ private int hasRedPointLeft(int x, int y){
 			for(int x=minImportantX;x<maxImportantX;x++)
 				if(SobelOperator.getRedValue(img, x, y)==255){
 					minY = y;
-		//			y+=maxImportantY;
 					break;
 				}	
 		for(int y=maxImportantY;y>minImportantY;y--)//raster from bottom up to find the lowest red pixel.
 			for(int x=minImportantX;x<maxImportantX;x++)
 				if(SobelOperator.getRedValue(img, x, y)==255){
 					maxY=y;
-		//			y-=maxImportantY;
 					break;
 				}
 		
