@@ -101,7 +101,6 @@ public class Drop{
 		angleRight=Math.abs(Lines.getAngleDegrees(blueLine, rightDropLine));
 		width=(xR-xL)/pixelsPerCentimeter;
 		
-		leftDropLine=findLeftLine(img);
 		
 		
 		img=imposeRightLine(img,rightDropLine,Color.GREEN);//(draw right line on drop)
@@ -280,10 +279,11 @@ public class Drop{
 		int points[]=findLeftContactPoint(bi);
 		Graphics2D g = bi.createGraphics();
 		ArrayList<Lines> lineGroup = new ArrayList<>();
-		
+		g.setColor(Color.CYAN);
 		for(int i=2;i<=16;i++){//5,14
 			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
-	//		g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
+			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
+	//		System.out.println("x: "+ thisPoint[0]+" y: "+thisPoint[1]);
 			lineGroup.add(new Lines(points,thisPoint));
 		//	System.out.println(lineGroup[i-5].getM());
 		}
@@ -297,6 +297,7 @@ public class Drop{
 			
 		int y=(int)Math.round(avgM*(x-points[0])+points[1]);//x-line.getX1()
 //		g.drawLine(points[0], points[1], x,y);
+//		System.out.println(avgM);
 		return new Lines(points,avgM);
 	}
 	
