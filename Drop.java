@@ -81,6 +81,8 @@ public class Drop{
 			
 			minImportantY = leftPlatformY-30;//correcting the important area
 			maxImportantY = rightPlatformY+60;//because we just flipped the image across the horizontal center of the image.
+			
+			
 		}
 
 		
@@ -98,7 +100,8 @@ public class Drop{
 		angleLeft=Math.abs(Lines.getAngleDegrees(blueLine,leftDropLine));
 		angleRight=Math.abs(Lines.getAngleDegrees(blueLine, rightDropLine));
 		width=(xR-xL)/pixelsPerCentimeter;
-
+		
+		leftDropLine=findLeftLine(img);
 		
 		
 		img=imposeRightLine(img,rightDropLine,Color.GREEN);//(draw right line on drop)
@@ -275,17 +278,25 @@ public class Drop{
 	 */
 	private Lines findLeftLine(BufferedImage bi){
 		int points[]=findLeftContactPoint(bi);
-		
+		Graphics2D g = bi.createGraphics();
 		ArrayList<Lines> lineGroup = new ArrayList<>();
 		
-		for(int i=5;i<=14;i++){
+		for(int i=2;i<=16;i++){//5,14
 			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
+	//		g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
 			lineGroup.add(new Lines(points,thisPoint));
 		//	System.out.println(lineGroup[i-5].getM());
 		}
 			
 		double avgM = Lines.getAverageSlope(lineGroup);
 		
+		g.setColor(Color.BLACK);
+		int[] point = findLeftContactPoint(bi);
+		
+		int x= point[0]+100;
+			
+		int y=(int)Math.round(avgM*(x-points[0])+points[1]);//x-line.getX1()
+//		g.drawLine(points[0], points[1], x,y);
 		return new Lines(points,avgM);
 	}
 	
@@ -298,7 +309,7 @@ public class Drop{
 		Graphics2D g = bi.createGraphics();
 		int[] point = findLeftContactPoint(bi);
 			
-		int x= point[0]+100;
+		int x= point[0]+50;//100
 			
 		int y=(int)Math.round(line.getM()*(x-line.getX1())+line.getY1());//x-line.getX1()
 		g.setColor(c);
