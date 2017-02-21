@@ -184,7 +184,7 @@ public class Drop{
 						if(ImageUtilities.isRed(bi, x, y-2)){
 							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
 							boolean isOnDrop = false;
-							for(int rasterX = x; rasterX < x+4; rasterX++)
+							for(int rasterX = x; rasterX < x+7; rasterX++)//was x+4
 								if(ImageUtilities.isRed(bi, rasterX, y-10))
 									isOnDrop = true;
 							if(isOnDrop){
