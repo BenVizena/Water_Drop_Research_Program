@@ -61,7 +61,7 @@ public class Lines {
 		
 		for(int x=0;x<lines.size();x++){
 				sumSlope += lines.get(x).getM();
-				System.out.println(lines.get(x).getX1()+" "+lines.get(x).getY1()+" "+lines.get(x).getX2()+" "+lines.get(x).getY2()+" "+lines.get(x).getM());
+	//			System.out.println(lines.get(x).getX1()+" "+lines.get(x).getY1()+" "+lines.get(x).getX2()+" "+lines.get(x).getY2()+" "+lines.get(x).getM());
 			
 		}
 		//System.out.println("lines size: "+lines.size());

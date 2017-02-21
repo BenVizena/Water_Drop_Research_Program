@@ -88,8 +88,8 @@ public class Drop{
 		
 		
 		
-		
-		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+		img=ImageUtilities.supressFeatures(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+		img=ImageUtilities.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 
 		
 		blueLine = findLine(img,leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);
@@ -143,12 +143,12 @@ public class Drop{
 		g.setColor(new Color(255,165,0));
 		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
 			for(int y=minImportantY;y<maxImportantY-10;y++){//the image
-				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y-2)==255){//then check to see if the pixel below is red    was y+1
-						if(SobelOperator.getRedValue(bi,x,y+1)==255){
+				if(ImageUtilities.getBlueValue(bi, x, y)==255){//to find the blue line
+					if(ImageUtilities.isRed(bi, x, y-2)){//then check to see if the pixel below is red    was y+1
+						if(ImageUtilities.isRed(bi,x,y+1)){
 							boolean isOnDrop = false;
-							for(int rasterX = x; rasterX > x-5;rasterX--)
-								if(SobelOperator.getRedValue(bi, rasterX, y-5)==255)
+							for(int rasterX = x; rasterX > x-10;rasterX--)
+								if(ImageUtilities.isRed(bi, rasterX, y-5))
 									isOnDrop = true;
 							if(isOnDrop){
 								point[0]=x;//if it is
@@ -179,13 +179,13 @@ public class Drop{
 		g.setColor(new Color(255,165,0));
 		for(int x=minImportantX+10;x<maxImportantX-10;x++){//raster over
 			for(int y=minImportantY+16;y<maxImportantY-16;y++){//the image
-				if(SobelOperator.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(SobelOperator.getRedValue(bi, x, y+1)==255){//then check to see if the pixel below is red    was y+1
-						if(SobelOperator.getRedValue(bi, x, y-2)==255){
+				if(ImageUtilities.getBlueValue(bi, x, y)==255){//to find the blue line
+					if(ImageUtilities.isRed(bi, x, y+1)){//then check to see if the pixel below is red    was y+1
+						if(ImageUtilities.isRed(bi, x, y-2)){
 							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
 							boolean isOnDrop = false;
 							for(int rasterX = x; rasterX < x+4; rasterX++)
-								if(SobelOperator.getRedValue(bi, rasterX, y-10)==255)
+								if(ImageUtilities.isRed(bi, rasterX, y-10))
 									isOnDrop = true;
 							if(isOnDrop){
 								point[0]=x;//if it is
@@ -219,7 +219,7 @@ public class Drop{
 		ArrayList<Lines> lineGroup = new ArrayList<>();
 		
 		
-		for(int i=5;i<=14;i++){
+		for(int i=5;i<=8;i++){
 			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]),p1[1]-i};
 			lineGroup.add(new Lines(p1,thisPoint));
 		}
@@ -243,7 +243,7 @@ public class Drop{
 		g.setColor(new Color(157,235,233));
 		for(int x=startX;x>minImportantX;x--){//rasters from right to left
 			try{
-				if(SobelOperator.getRedValue(bi, x, y)==255){//looking for a red pixel
+				if(ImageUtilities.isRed(bi, x, y)){//looking for a red pixel
 				xPoint=x;
 				g.drawLine(x, y, x, y);
 				x-=maxImportantX;
@@ -260,7 +260,7 @@ public class Drop{
 	private static int scanFromLeft(BufferedImage bi, int y2, int x1){//y2 is the height that you will scan in at.  x1 is a term that speeds things up.  you basically set the x point at which you start scanning
 		int x2=x1-20;
 		for(int x=x2;x<maxImportantX;x++){
-			if(SobelOperator.getRedValue(bi, x, y2)==255){
+			if(ImageUtilities.isRed(bi, x, y2)){
 				x2=x;
 				x+=maxImportantX;
 				break;
@@ -291,9 +291,9 @@ public class Drop{
 		double avgM = Lines.getAverageSlope(lineGroup);
 		
 		g.setColor(Color.BLACK);
-		int[] point = findLeftContactPoint(bi);
+//		int[] point = findLeftContactPoint(bi);
 		
-		int x= point[0]+100;
+//		int x= point[0]+100;
 			
 //		int y=(int)Math.round(avgM*(x-points[0])+points[1]);//x-line.getX1()
 //		g.drawLine(points[0], points[1], x,y);

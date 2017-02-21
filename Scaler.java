@@ -13,7 +13,7 @@ public class Scaler {
 	}
 	
 	public static int getScale(BufferedImage img){//returns number of pixels in one centimeter
-		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+		img=ImageUtilities.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		
 		Random rnd = new Random();
 		
@@ -39,13 +39,13 @@ public class Scaler {
 		
 		//find lastLeftPixel
 		for(int startX=x;startX>0;startX--){
-			if(SobelOperator.getRedValue(img, startX, y)==255)
+			if(ImageUtilities.getRedValue(img, startX, y)==255)
 				lastLeftPixel = startX;
 		}
 		
 		//find lastRightPixel
 		for(int startX=x;startX<img.getWidth()-1;startX++){
-			if(SobelOperator.getRedValue(img, startX, y)==255)
+			if(ImageUtilities.getRedValue(img, startX, y)==255)
 				lastRightPixel = startX;
 		}
 		

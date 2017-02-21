@@ -3,7 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
+//import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -54,8 +54,8 @@ public class TopDrop {
 
 
 		
-		
-		img=SobelOperator.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+		img=ImageUtilities.supressFeatures(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+		img=ImageUtilities.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		/*
 		 * method to fill in the circle...
 		 * 
@@ -63,7 +63,7 @@ public class TopDrop {
 		 */
 		
 		
-		int[] pointInDrop = findPointInDrop();
+//		int[] pointInDrop = findPointInDrop();
 //		fillInDrop(pointInDrop);
 		fillInDrop();
 		area = findAreaRaster();
@@ -88,7 +88,7 @@ public class TopDrop {
 		
 		for(int x=minImportantX;x<=maxImportantX;x++)
 			for(int y=minImportantY;y<=maxImportantY;y++)
-				if(SobelOperator.getRedValue(img, x, y) == 255)
+				if(ImageUtilities.isRed(img, x, y))
 					hits+=1;
 		
 		//TODO contemplate the meaning of the area of a single pixel...
@@ -99,7 +99,7 @@ public class TopDrop {
 		return scaledTotalArea * hits/totalPixels;//the total area of the important region (in cm^2) * the percentage of pixels that are a part of the drop.
 	}
 
-	
+/*	
 	private int[] findPointInDrop(){
 		int[] point = {0,0};
 		
@@ -120,13 +120,13 @@ public class TopDrop {
 		boolean edgeToRight=false;
 		
 		for(int x=point[0];x>minImportantX;x--)
-			if(SobelOperator.getRedValue(img, x, point[1])==255){
+			if(ImageUtilities.getRedValue(img, x, point[1])==255){
 				edgeToLeft = true;
 				break;
 			}
 		
 		for(int x=point[0];x<maxImportantX;x++)
-			if(SobelOperator.getRedValue(img, x, point[1])==255){
+			if(ImageUtilities.getRedValue(img, x, point[1])==255){
 				edgeToRight=true;
 				break;
 			}
@@ -136,7 +136,7 @@ public class TopDrop {
 		else
 			return false;
 	}
-	
+	*/
 	private void fillInDrop(){
 		//raster over every point.  if it is not red, if it is between two red points, draw a line between those two points.
 		Graphics2D g = img.createGraphics();
@@ -144,7 +144,7 @@ public class TopDrop {
 		
 		for(int x=minImportantX;x<maxImportantX;x++){
 			for(int y=minImportantY;y<maxImportantY;y++){
-				if(SobelOperator.getRedValue(img, x, y)!=255){
+				if(!ImageUtilities.isRed(img, x, y)){
 					int a = hasRedPointAbove(x,y);
 					int b = hasRedPointBelow(x,y);
 					if(a!=0 && b!=0)
@@ -158,7 +158,7 @@ public class TopDrop {
 			}
 		}
 	}
-	
+/*	
 	private void fillInDrop(int[] pointInDrop){
 		int[] blackDetection = fillInLineOfDrop(pointInDrop);//0 if no black. 1 if black above. -1 if black below.
 		
@@ -186,7 +186,7 @@ public class TopDrop {
 		
 		
 	}
-	
+	*/
 	private double findWidth(){
 		return (double)unscaledWidth/(double)pixelsPerCentimeter;
 	}
@@ -196,7 +196,7 @@ public class TopDrop {
 		int yVal=0;
 		
 		for(int i = y;i>minImportantY;i--){
-			if(SobelOperator.getRedValue(img, x, i)==255)
+			if(ImageUtilities.isRed(img, x, i))
 				yVal=i;
 		}
 		return yVal;
@@ -207,7 +207,7 @@ public class TopDrop {
 		int yVal = 0;
 		
 		for(int i=y;i<maxImportantY;i++){
-			if(SobelOperator.getRedValue(img, x, i)==255)
+			if(ImageUtilities.isRed(img, x, i))
 				yVal = i;
 		}
 		return yVal;
@@ -218,7 +218,7 @@ private int hasRedPointLeft(int x, int y){
 		int xVal=0;
 		
 		for(int i = x;i>minImportantX;i--){
-			if(SobelOperator.getRedValue(img, i, y)==255)
+			if(ImageUtilities.isRed(img, i, y))
 				xVal=i;
 		}
 		return xVal;
@@ -229,12 +229,12 @@ private int hasRedPointLeft(int x, int y){
 		int xVal = 0;
 		
 		for(int i=x;i<maxImportantX;i++){
-			if(SobelOperator.getRedValue(img, i, y)==255)
+			if(ImageUtilities.isRed(img, i, y))
 				xVal = i;
 		}
 		return xVal;
 	}
-	
+/*	
 	private int[] fillInLineOfDrop(int[] point){
 		Graphics2D g = img.createGraphics();
 		g.setColor(Color.RED);
@@ -244,11 +244,11 @@ private int hasRedPointLeft(int x, int y){
 		
 		int result[] = {0,0};
 		for(int x=minMax[0];x<minMax[1];x++){
-			if(SobelOperator.getRedValue(img,x,point[1]+1) < 80){
+			if(ImageUtilities.getRedValue(img,x,point[1]+1) < 80){
 				result[0] = -1;
 				result[1] = x;
 			}
-			if(SobelOperator.getRedValue(img, x, point[1]-1) < 80){
+			if(ImageUtilities.getRedValue(img, x, point[1]-1) < 80){
 				result[0] = 1;
 				result[1] = x;
 			}
@@ -261,19 +261,19 @@ private int hasRedPointLeft(int x, int y){
 		
 		return result;
 	}
-	
+	*/
 	private double findHeight(){
 		int minY=-1;
 		int maxY=-1;
 		for(int y=minImportantY;y<maxImportantY;y++)//raster from top down to find highest red pixel.
 			for(int x=minImportantX;x<maxImportantX;x++)
-				if(SobelOperator.getRedValue(img, x, y)==255){
+				if(ImageUtilities.isRed(img, x, y)){
 					minY = y;
 					break;
 				}	
 		for(int y=maxImportantY;y>minImportantY;y--)//raster from bottom up to find the lowest red pixel.
 			for(int x=minImportantX;x<maxImportantX;x++)
-				if(SobelOperator.getRedValue(img, x, y)==255){
+				if(ImageUtilities.isRed(img, x, y)){
 					maxY=y;
 					break;
 				}
@@ -284,25 +284,25 @@ private int hasRedPointLeft(int x, int y){
 		//return unscaledHeight * scalingFactor;
 		return (double)unscaledHeight/(double)pixelsPerCentimeter;	
 	}
-	
+/*	
 	private int[] findMaxValsInDropForY(int[] point){
 		int minX=1;
 		int maxX=1;
 		
 		
 		for(int x= point[0];x>minImportantX;x--)
-			if(SobelOperator.getRedValue(img, x, point[1])==255){
+			if(ImageUtilities.getRedValue(img, x, point[1])==255){
 				minX = x;
 			}
 		
 		for(int x=point[0];x<maxImportantX;x++)
-			if(SobelOperator.getRedValue(img, x, point[1])==255){
+			if(ImageUtilities.getRedValue(img, x, point[1])==255){
 				maxX=x;
 			}
 		
 		return new int[]{minX,maxX};
 	}
-	
+	*/
 }
 
 
