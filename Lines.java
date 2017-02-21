@@ -27,6 +27,8 @@ public class Lines {
 		double temp1=y2-y1;
 		double temp2=x2-x1;
 		
+		if(temp2 == 0)
+			temp2=.1;
 		this.m=temp1/temp2;
 		
 	}
@@ -56,17 +58,14 @@ public class Lines {
 	
 	public static double getAverageSlope(ArrayList<Lines> lines){
 		double sumSlope = 0;
-		int sizeOffset = 0;
 		
 		for(int x=0;x<lines.size();x++){
-			if(lines.get(x).getX1()!=lines.get(x).getX2()){
 				sumSlope += lines.get(x).getM();
 				System.out.println(lines.get(x).getX1()+" "+lines.get(x).getY1()+" "+lines.get(x).getX2()+" "+lines.get(x).getY2()+" "+lines.get(x).getM());
-			}else
-				sizeOffset--;
+			
 		}
 		//System.out.println("lines size: "+lines.size());
-		return sumSlope/(lines.size()-sizeOffset);
+		return sumSlope/(lines.size());
 	}
 	
 

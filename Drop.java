@@ -184,8 +184,8 @@ public class Drop{
 						if(SobelOperator.getRedValue(bi, x, y-2)==255){
 							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
 							boolean isOnDrop = false;
-							for(int rasterX = x; rasterX < x+5; rasterX++)
-								if(SobelOperator.getRedValue(bi, rasterX, y-5)==255)
+							for(int rasterX = x; rasterX < x+4; rasterX++)
+								if(SobelOperator.getRedValue(bi, rasterX, y-10)==255)
 									isOnDrop = true;
 							if(isOnDrop){
 								point[0]=x;//if it is
@@ -279,10 +279,10 @@ public class Drop{
 		int points[]=findLeftContactPoint(bi);
 		Graphics2D g = bi.createGraphics();
 		ArrayList<Lines> lineGroup = new ArrayList<>();
-		g.setColor(Color.CYAN);
+//		g.setColor(Color.CYAN);
 		for(int i=2;i<=16;i++){//5,14
 			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
-			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
+//			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
 	//		System.out.println("x: "+ thisPoint[0]+" y: "+thisPoint[1]);
 			lineGroup.add(new Lines(points,thisPoint));
 		//	System.out.println(lineGroup[i-5].getM());
@@ -295,7 +295,7 @@ public class Drop{
 		
 		int x= point[0]+100;
 			
-		int y=(int)Math.round(avgM*(x-points[0])+points[1]);//x-line.getX1()
+//		int y=(int)Math.round(avgM*(x-points[0])+points[1]);//x-line.getX1()
 //		g.drawLine(points[0], points[1], x,y);
 //		System.out.println(avgM);
 		return new Lines(points,avgM);
