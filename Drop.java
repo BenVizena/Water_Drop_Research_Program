@@ -95,12 +95,12 @@ public class Drop{
 		blueLine = findLine(img,leftPlatformX, leftPlatformY, rightPlatformX, rightPlatformY);
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
-		xL=leftDropLine.getX1()/pixelsPerCentimeter;
-		xR=rightDropLine.getX1()/pixelsPerCentimeter;
+		xL=findLeftContactPoint(img)[0];//leftDropLine.getX1()/pixelsPerCentimeter;
+		xR=findRightContactPoint(img)[1];//rightDropLine.getX1()/pixelsPerCentimeter;
 		angleLeft=Math.abs(Lines.getAngleDegrees(blueLine,leftDropLine));
 		angleRight=Math.abs(Lines.getAngleDegrees(blueLine, rightDropLine));
 		width=(xR-xL)/pixelsPerCentimeter;
-		
+		System.out.println(xL);
 		
 		
 		img=imposeRightLine(img,rightDropLine,Color.GREEN);//(draw right line on drop)
