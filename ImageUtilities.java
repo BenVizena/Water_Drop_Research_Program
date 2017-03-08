@@ -132,7 +132,7 @@ public final class ImageUtilities {
 				totalBrightness+=getBrightness(img,x,y);
 		
 		int brightness_cutoff = (int) (totalBrightness/totalPixels);
-		System.out.println(brightness_cutoff);
+//		System.out.println(brightness_cutoff);
 		
 		for(int x=0;x<img.getWidth();x++)//raster over
 			for(int y=0;y<img.getHeight();y++)//the important image pixels

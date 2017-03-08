@@ -16,7 +16,7 @@ public class TopDrop {
 	private BufferedImage img;
 	private double height;
 	private double width;
-	private int unscaledWidth = -1;
+//	private int unscaledWidth = -1;
 	private int pixelsPerCentimeter;
 	
 	/*
@@ -98,51 +98,14 @@ public class TopDrop {
 					hits+=1;
 		
 		//TODO contemplate the meaning of the area of a single pixel...
-		System.out.println("Percentage of important area: "+(double)(hits/totalPixels*100)+"%");
+//		System.out.println("Percentage of important area: "+(double)(hits/totalPixels*100)+"%");
 		
 		double scaledTotalArea = (double)totalPixels/(double)pixelsPerCentimeter/(double)pixelsPerCentimeter;//(number of pixels in X * number of pixels in Y / scale for X / scale for Y)
 		
 		return scaledTotalArea * hits/totalPixels;//the total area of the important region (in cm^2) * the percentage of pixels that are a part of the drop.
 	}
 
-/*	
-	private int[] findPointInDrop(){
-		int[] point = {0,0};
-		
-		Random rnd = new Random();
-		
-		boolean found = false;
-		while(!found){
-			point[0]=rnd.nextInt(maxImportantX-minImportantX)+minImportantX;
-			point[1]=rnd.nextInt(maxImportantY-minImportantY)+minImportantY;
-			if(pointIsInDrop(point))
-				found=true;
-		}
-		return point;
-	}
-	
-	private boolean pointIsInDrop(int[] point){
-		boolean edgeToLeft=false;
-		boolean edgeToRight=false;
-		
-		for(int x=point[0];x>minImportantX;x--)
-			if(ImageUtilities.getRedValue(img, x, point[1])==255){
-				edgeToLeft = true;
-				break;
-			}
-		
-		for(int x=point[0];x<maxImportantX;x++)
-			if(ImageUtilities.getRedValue(img, x, point[1])==255){
-				edgeToRight=true;
-				break;
-			}
-		
-		if(edgeToLeft && edgeToRight)
-			return true;
-		else
-			return false;
-	}
-	*/
+
 	private void fillInDrop(){
 		//raster over every point.  if it is not red, if it is between two red points, draw a line between those two points.
 		Graphics2D g = img.createGraphics();
@@ -164,37 +127,30 @@ public class TopDrop {
 			}
 		}
 	}
-/*	
-	private void fillInDrop(int[] pointInDrop){
-		int[] blackDetection = fillInLineOfDrop(pointInDrop);//0 if no black. 1 if black above. -1 if black below.
-		
-		
-		int[] minMax = findMaxValsInDropForY(pointInDrop);
-		int middleX = (minMax[0]+minMax[1])/2;
-			
-		boolean didStuff=false;
-			
-			
-		if((hasRedPointAbove(middleX, pointInDrop[1])!=0) && pointInDrop[1]-1>=minImportantY && middleX > minImportantX && middleX<maxImportantX){
-			fillInDrop(new int[]{middleX,pointInDrop[1]-1});
-			didStuff = true;
-		}
-		if((hasRedPointBelow(middleX, pointInDrop[1])!=0) && pointInDrop[1]+1<=maxImportantY && middleX > minImportantX && middleX<maxImportantX ){
-			fillInDrop(new int[]{middleX, pointInDrop[1]+1});		
-			didStuff = true;
-		}
-		
-		if(blackDetection[0] == -1 && didStuff ==false)
-			fillInDrop(new int[]{blackDetection[1], pointInDrop[1]+1});
-		
-		if(blackDetection[0] == 1 && didStuff == false)
-			fillInDrop(new int[]{blackDetection[1], pointInDrop[1]-1});
-		
-		
-	}
-	*/
+
 	private double findWidth(){
+		double unscaledWidth = findUnscaledWidth();
 		return (double)unscaledWidth/(double)pixelsPerCentimeter;
+	}
+	
+	private int findUnscaledWidth(){
+		int unscaledWidth=0;
+		for(int y=minImportantY;y<maxImportantY;y++){
+			int firstRedPixel=0;
+			int lastRedPixel=0;
+			boolean foundFirstRedPixel=false;
+			for(int x=minImportantX;x<maxImportantX;x++){
+				if(foundFirstRedPixel == false && ImageUtilities.getRedValue(img, x, y)==255){
+					foundFirstRedPixel=true;
+					firstRedPixel=x;
+				}else if(ImageUtilities.getRedValue(img,x,y)==255 && foundFirstRedPixel==true)
+					lastRedPixel=x;
+				
+				if(lastRedPixel-firstRedPixel > unscaledWidth)
+					unscaledWidth=lastRedPixel-firstRedPixel;
+			}
+		}
+		return unscaledWidth;
 	}
 	
 	private int hasRedPointAbove(int x, int y){
@@ -269,22 +225,27 @@ private int hasRedPointLeft(int x, int y){
 	}
 	*/
 	private double findHeight(){
-		int minY=-1;
-		int maxY=-1;
-		for(int y=minImportantY;y<maxImportantY;y++)//raster from top down to find highest red pixel.
-			for(int x=minImportantX;x<maxImportantX;x++)
-				if(ImageUtilities.isRed(img, x, y)){
-					minY = y;
-					break;
-				}	
-		for(int y=maxImportantY;y>minImportantY;y--)//raster from bottom up to find the lowest red pixel.
-			for(int x=minImportantX;x<maxImportantX;x++)
-				if(ImageUtilities.isRed(img, x, y)){
-					maxY=y;
-					break;
-				}
+		int unscaledHeight=0;
+
+		for(int x=minImportantX;x<maxImportantX;x++){//raster from top down to find highest red pixel.
+			int firstRedPixel=0;
+			int lastRedPixel=0;
+			boolean foundFirstRedPixel=false;
+			
+			for(int y=minImportantY;y<maxImportantY;y++)
+				if(!foundFirstRedPixel && ImageUtilities.isRed(img, x, y)){
+					foundFirstRedPixel=true;
+					firstRedPixel=y;
+				}else if(ImageUtilities.isRed(img, x, y))
+					lastRedPixel=y;
+			
+			if(lastRedPixel-firstRedPixel>unscaledHeight)
+				unscaledHeight=lastRedPixel-firstRedPixel;
+		}
 		
-		int unscaledHeight = maxY-minY;
+		
+	//	int unscaledHeight = maxY-minY;
+		System.out.println(unscaledHeight);
 		
 		//TODO 
 		//return unscaledHeight * scalingFactor;
