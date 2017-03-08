@@ -22,10 +22,10 @@ public class TopDrop {
 	/*
 	 * these declarations are setting up the "important" zone on the Buffered Image.  The important zone is everywhere the drop might be.
 	 */
-	private final static int minImportantX=644;//800
-	private final static int maxImportantX=944;//1200
-	private final static int minImportantY=600;//550
-	private final static int maxImportantY=850;//950
+	private static int minImportantX=644;//800
+	private static int maxImportantX=944;//1200
+	private static int minImportantY=600;//550
+	private static int maxImportantY=850;//950
 //	private final static int gradientThreshold=180;//180
 	private int gradientThreshold;
 	
@@ -35,12 +35,18 @@ public class TopDrop {
 	}
 	
 	
-	public TopDrop(File filePath,String runName,double time, double frameNumber, int pixelsPerCentimeter, int gradThresh){
+	public TopDrop(File filePath,String runName,double time, double frameNumber, int pixelsPerCentimeter, int topLeftPlatformX, int topLeftPlatformY, int bottomRightPlatformX,
+			int bottomRightPlatformY, int gradThresh){
 		gradientThreshold = gradThresh;
 		startTime = time;
 		this.time=time+(double)(frameNumber/60);
 		this.runName=runName;//update with angles and width.  
 		this.pixelsPerCentimeter=pixelsPerCentimeter;
+		minImportantX=topLeftPlatformX;
+		minImportantY=topLeftPlatformY;
+		maxImportantX=bottomRightPlatformX;
+		maxImportantY=bottomRightPlatformY;
+		
 //		this.filePath=filePath;
 
 		//makes a Buffered Image from the file at the filePath.

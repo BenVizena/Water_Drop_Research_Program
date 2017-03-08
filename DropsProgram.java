@@ -49,13 +49,15 @@ public class DropsProgram{
     	pixelsPerCentimeter = Scaler.getScale(scaleImage);
     	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
     	
+    	int rightPlatformYInt = Integer.parseInt(rightPlatformY);
+    	int leftPlatformYInt = Integer.parseInt(leftPlatformY);
+    	int rightPlatformXInt = Integer.parseInt(rightPlatformX);
+    	int leftPlatformXInt = Integer.parseInt(leftPlatformX);
+    	
     	
     	if(sideViewTop||sideViewBot){
     		Drop[] drops = new Drop[numFrames];
-    		int rightPlatformYInt = Integer.parseInt(rightPlatformY);
-        	int leftPlatformYInt = Integer.parseInt(leftPlatformY);
-        	int rightPlatformXInt = Integer.parseInt(rightPlatformX);
-        	int leftPlatformXInt = Integer.parseInt(leftPlatformX);
+    		
     //    	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
         	
     		
@@ -101,7 +103,7 @@ public class DropsProgram{
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
             		File filePath = new File(destinationPath+"\\d"+nameNumber+".png");
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
-            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter, intensityCutoffInt);
+            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt, intensityCutoffInt);
             		bi.flush();
             	}
             	catch(Exception e){
