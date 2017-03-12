@@ -68,8 +68,10 @@ public class DropsProgram{
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
             		File filePath = new File(destinationPath+"\\d"+nameNumber+".png");
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
+            		Double currentTime = startTime+(double)i/60;
+         //   		System.out.println(currentTime+" "+startTime+" "+i);
             		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt,
-            				sideViewTop);//creates drop.
+            				sideViewTop,currentTime);//creates drop.
             		bi.flush();
             	}
             	catch(Exception e){

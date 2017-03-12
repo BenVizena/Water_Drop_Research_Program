@@ -94,7 +94,7 @@ public final class ImageUtilities {
 		
 //		img=toGrayScale(img);
 //		System.out.println("grayscale");
-		img=gaussianFilter(img,minImportantX,maxImportantX,minImportantY,maxImportantY);
+//		img=gaussianFilter(img,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		
 		BufferedImage bi = copy(img);//make a separate copy of the input image.
 		
@@ -121,9 +121,18 @@ public final class ImageUtilities {
 			return false;
 	}
 	
+	
+	public static boolean isBlue(BufferedImage img, int x, int y){
+		if(ImageUtilities.getBlueValue(img, x, y)==255 && ImageUtilities.getGreenValue(img,x,y)==0 && ImageUtilities.getRedValue(img, x, y)==0)
+			return true;
+		else
+			return false;
+	}
+	
 	public static BufferedImage supressFeatures(BufferedImage img, int gradCutoff, int minImportantX, int maxImportantX, int minImportantY, int maxImportantY){
 		img = toGrayScale(img);
 		int white_rgb = new Color(255,255,255).getRGB();
+		int black_rgb = new Color(0,0,0).getRGB();
 		long totalBrightness = 0;
 		int totalPixels = img.getWidth()*img.getHeight();
 		
@@ -136,8 +145,10 @@ public final class ImageUtilities {
 		
 		for(int x=0;x<img.getWidth();x++)//raster over
 			for(int y=0;y<img.getHeight();y++)//the important image pixels
-				if(getBrightness(img,x,y)>brightness_cutoff)
+				if(getBrightness(img,x,y)>brightness_cutoff)//-36 for 1063
 					img.setRGB(x, y, white_rgb);
+				else
+					img.setRGB(x, y, black_rgb);
 		
 		return img;
 	}

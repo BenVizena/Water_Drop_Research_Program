@@ -60,7 +60,7 @@ public class TopDrop {
 
 
 		
-		img=ImageUtilities.supressFeatures(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
+	//	img=ImageUtilities.supressFeatures(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		img=ImageUtilities.markEdges(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		/*
 		 * method to fill in the circle...
@@ -86,6 +86,8 @@ public class TopDrop {
 			System.out.println("DIDN'T ACTUALLY WRITE NEW IMAGE");
 			e.printStackTrace();
 		}
+		
+		img=null;
 	}
 	
 	private double findAreaRaster(){
@@ -245,7 +247,7 @@ private int hasRedPointLeft(int x, int y){
 		
 		
 	//	int unscaledHeight = maxY-minY;
-		System.out.println(unscaledHeight);
+	//	System.out.println(unscaledHeight);
 		
 		//TODO 
 		//return unscaledHeight * scalingFactor;

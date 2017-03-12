@@ -48,13 +48,13 @@ public class Drop{
 	 * (used to calculate the time that the frame happened).
 	 */
 	public Drop(File filePath,String runInfo,double time, double frameNumber, int pixelsPerCentimeter, int leftPlatformY, int rightPlatformY, int gradientThreshold,
-			int leftPlatformX, int rightPlatformX, boolean topSide){
+			int leftPlatformX, int rightPlatformX, boolean topSide, double currentTime){
 		startTime = time;
-		this.time=time+(double)(frameNumber/60);
+		this.time=currentTime;//time+(double)(frameNumber/60);
 		this.runInfo=runInfo;//update with angles and width.  
 		this.filePath=filePath;
 		this.pixelsPerCentimeter=pixelsPerCentimeter;
-
+		System.out.println(this.time);
 
 		//makes a Buffered Image from the file at the filePath.
 		BufferedImage img=null;
@@ -79,8 +79,8 @@ public class Drop{
 			leftPlatformY = img.getHeight()-leftPlatformY;
 			rightPlatformY = img.getHeight()-rightPlatformY;
 			
-			minImportantY = leftPlatformY-30;//correcting the important area
-			maxImportantY = rightPlatformY+60;//because we just flipped the image across the horizontal center of the image.
+			minImportantY = leftPlatformY-30;//correcting the important area.  was -30
+			maxImportantY = rightPlatformY+3;//because we just flipped the image across the horizontal center of the image.  was +60
 			
 			
 		}
@@ -100,7 +100,7 @@ public class Drop{
 		angleLeft=Math.abs(Lines.getAngleDegrees(blueLine,leftDropLine));
 		angleRight=Math.abs(Lines.getAngleDegrees(blueLine, rightDropLine));
 		width=(xR-xL)/pixelsPerCentimeter;
-		System.out.println(xL);
+//		System.out.println(xL);
 		
 		
 		img=imposeRightLine(img,rightDropLine,Color.GREEN);//(draw right line on drop)
@@ -114,7 +114,7 @@ public class Drop{
 			e.printStackTrace();
 		}
 
-		
+		img=null;
 	}
 	
 	/*
@@ -178,23 +178,35 @@ public class Drop{
 		Graphics2D g = bi.createGraphics();
 		g.setColor(new Color(255,165,0));
 		for(int x=minImportantX+10;x<maxImportantX-10;x++){//raster over
-			for(int y=minImportantY+16;y<maxImportantY-16;y++){//the image
-				if(ImageUtilities.getBlueValue(bi, x, y)==255){//to find the blue line
-					if(ImageUtilities.isRed(bi, x, y+1)){//then check to see if the pixel below is red    was y+1
-						if(ImageUtilities.isRed(bi, x, y-2)){
-							//if the point 15 pixels higher (y-15) is part of the drop (within a certain x range away), take this point.
-							boolean isOnDrop = false;
-							for(int rasterX = x; rasterX < x+7; rasterX++)//was x+4
-								if(ImageUtilities.isRed(bi, rasterX, y-10))
-									isOnDrop = true;
+			for(int y=minImportantY;y<maxImportantY;y++){//the image      was +16, -16
+				if(ImageUtilities.isBlue(bi, x, y)){//to find the blue line
+						if(ImageUtilities.isRed(bi, x, y-1)){
+						//	g.drawLine(x, y, x, y);
+							boolean isOnDrop = true;
+							for(int rasterY=y-1;rasterY>y-5;rasterY--){
+								boolean yDropCheck=false;
+								
+								for(int rasterX = x-3; rasterX < x+3; rasterX++){//was x+4
+									if(ImageUtilities.isRed(bi, rasterX, rasterY)){
+										yDropCheck = true;
+								//		g.drawLine(rasterX, rasterY, rasterX , rasterY);
+									}	
+								}
+								if(!yDropCheck){
+									isOnDrop=false;
+									rasterY=minImportantY;
+								}
+							}
 							if(isOnDrop){
+					//			System.out.println("DFKLSDJFSLKFJLD");
 								point[0]=x;//if it is
-								point[1]=y-1;//you have found the right edge
+								point[1]=y;//you have found the right edge
 								x=maxImportantX;
 								y=maxImportantY;
+								break;
 							}
 						}
-					}								
+			//		}								
 				}			
 			}
 		}
@@ -258,10 +270,14 @@ public class Drop{
 	}
 	
 	private static int scanFromLeft(BufferedImage bi, int y2, int x1){//y2 is the height that you will scan in at.  x1 is a term that speeds things up.  you basically set the x point at which you start scanning
-		int x2=x1-20;
+		//int x2=x1-20;
+	//	Graphics2D g = bi.createGraphics();
+//		g.setColor(Color.cyan);
+		int x2=x1;
 		for(int x=x2;x<maxImportantX;x++){
 			if(ImageUtilities.isRed(bi, x, y2)){
 				x2=x;
+			//	g.drawLine(x, y2, x, y2);
 				x+=maxImportantX;
 				break;
 			}
@@ -280,8 +296,8 @@ public class Drop{
 		Graphics2D g = bi.createGraphics();
 		ArrayList<Lines> lineGroup = new ArrayList<>();
 //		g.setColor(Color.CYAN);
-		for(int i=2;i<=16;i++){//5,14
-			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]),points[1]-i};
+		for(int i=2;i<=14;i++){//5,14
+			int thisPoint[] = {scanFromLeft(bi,points[1]-i,points[0]-5),points[1]-i};
 //			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
 	//		System.out.println("x: "+ thisPoint[0]+" y: "+thisPoint[1]);
 			lineGroup.add(new Lines(points,thisPoint));
