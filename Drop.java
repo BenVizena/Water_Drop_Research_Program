@@ -136,7 +136,7 @@ public class Drop{
 	}
 	
 
-	
+	/*
 	private static int[] findRightContactPoint(BufferedImage bi){
 		int[] point={-1,-1};
 		Graphics2D g = bi.createGraphics();
@@ -163,7 +163,48 @@ public class Drop{
 		}
 		return point;
 	}
-
+*/
+	
+	private static int[] findRightContactPoint(BufferedImage bi){
+		int[] point={100,100};//-1,-1
+		Graphics2D g = bi.createGraphics();
+		g.setColor(new Color(255,165,0));
+		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
+			for(int y=minImportantY;y<maxImportantY;y++){//the image      was +16, -16
+				if(ImageUtilities.isBlue(bi, x, y)){//to find the blue line
+						if(ImageUtilities.isRed(bi, x, y-1)){
+						//	g.drawLine(x, y, x, y);
+							boolean isOnDrop = true;
+							for(int rasterY=y-1;rasterY>y-5;rasterY--){
+								boolean yDropCheck=false;
+								
+								for(int rasterX = x-3; rasterX < x+3; rasterX++){//was x+4
+									if(ImageUtilities.isRed(bi, rasterX, rasterY)){
+										yDropCheck = true;
+								//		g.drawLine(rasterX, rasterY, rasterX , rasterY);
+									}	
+								}
+								if(!yDropCheck){
+									isOnDrop=false;
+									rasterY=minImportantY;
+								}
+							}
+							if(isOnDrop){
+					//			System.out.println("DFKLSDJFSLKFJLD");
+								point[0]=x;//if it is
+								point[1]=y;//you have found the right edge
+								x=minImportantX;
+								y=maxImportantY;
+								break;
+							}
+						}
+			//		}								
+				}			
+			}
+		}
+		return point;
+	}
+	
 	/*
 	 * finds the point where the drop makes it's leftmost contact with the surface.
 	 * 
