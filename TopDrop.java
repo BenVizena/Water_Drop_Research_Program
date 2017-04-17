@@ -35,13 +35,14 @@ public class TopDrop {
 	}
 	
 	
-	public TopDrop(File filePath,String runName,double time, double frameNumber, int pixelsPerCentimeter, int topLeftPlatformX, int topLeftPlatformY, int bottomRightPlatformX,
+	public TopDrop(File filePath,String runName,double time, double frameNumber, double currentTime, int topLeftPlatformX, int topLeftPlatformY, int bottomRightPlatformX,
 			int bottomRightPlatformY, int gradThresh){
 		gradientThreshold = gradThresh;
 		startTime = time;
-		this.time=time+(double)(frameNumber/60);
+//		this.time=time+(double)(frameNumber/60);
+		this.time=currentTime;
 		this.runName=runName;//update with angles and width.  
-		this.pixelsPerCentimeter=pixelsPerCentimeter;
+		this.pixelsPerCentimeter=Scaler.getScale();
 		minImportantX=topLeftPlatformX;
 		minImportantY=topLeftPlatformY;
 		maxImportantX=bottomRightPlatformX;

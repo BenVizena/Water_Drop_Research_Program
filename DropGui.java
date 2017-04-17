@@ -60,7 +60,7 @@ public class DropGui extends Application{
 		Label startTimeLabel = new Label("Start Time: ");
 		Label endTimeLabel = new Label("End Time: ");
 		Label outputPathLabel = new Label("Output Path: ");
-		Label pathToScaleImageLabel = new Label("Path to Scale Image: ");
+//		Label pathToScaleImageLabel = new Label("Path to Scale Image: ");
 		Label leftPlatformYPointLabel = new Label ("Left Platform Y Value: ");
 		Label rightPlatformYPointLabel = new Label ("Right Platform Y Value: ");
 		Label intensityCutoffLabel = new Label ("Line Threshold (1-155): ");
@@ -92,8 +92,8 @@ public class DropGui extends Application{
 		gridpane.add(outputPathLabel, 0, 2);
 		gridpane.add(outputPathTF, 1, 2);
 		
-		gridpane.add(pathToScaleImageLabel, 0, 3);
-		gridpane.add(pathToScaleImageTF, 1, 3);
+//		gridpane.add(pathToScaleImageLabel, 0, 3);
+	//	gridpane.add(pathToScaleImageTF, 1, 3);
 		
 		gridpane.add(gap1Label,0,4);
 		gridpane.add(gap3Label, 1, 4);

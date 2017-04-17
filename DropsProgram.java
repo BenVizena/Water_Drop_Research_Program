@@ -24,8 +24,6 @@ import org.bytedeco.javacv.Java2DFrameConverter;
  */
 public class DropsProgram{
 	
-	private static int pixelsPerCentimeter;
-	
 	public static void runProgram(String runName, String vidPath, String outPath, String scalePathInput, String startTimeText, String endTimeText, boolean sideViewTop,
 			boolean sideViewBot, String rightPlatformY, String leftPlatformY, String intensityCutoff, String rightPlatformX, String leftPlatformX) throws Exception, IOException{
 		double startTime = Double.parseDouble(startTimeText);
@@ -44,9 +42,6 @@ public class DropsProgram{
     	frameGrabber.setFrameNumber((int)Math.floor(startTime*60));//sets the images to start being pulled at the specified start time.
     	Frame image;
     	
-    	File scaleFile = new File(scalePathInput);
-    	BufferedImage scaleImage = ImageIO.read(scaleFile);
-    	pixelsPerCentimeter = Scaler.getScale(scaleImage);
     	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
     	
     	int rightPlatformYInt = Integer.parseInt(rightPlatformY);
@@ -70,7 +65,7 @@ public class DropsProgram{
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
             		Double currentTime = startTime+(double)i/60;
          //   		System.out.println(currentTime+" "+startTime+" "+i);
-            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt,
+            		drops[i]=new Drop(filePath,runName,(startTime+i/60),i,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt,
             				sideViewTop,currentTime);//creates drop.
             		bi.flush();
             	}
@@ -105,7 +100,9 @@ public class DropsProgram{
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
             		File filePath = new File(destinationPath+"\\d"+nameNumber+".png");
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
-            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, pixelsPerCentimeter, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt, intensityCutoffInt);
+
+            		Double currentTime = startTime+(double)i/60;
+            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, currentTime, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt, intensityCutoffInt);
             		bi.flush();
             	}
             	catch(Exception e){

@@ -47,13 +47,13 @@ public class Drop{
 	 * drives the drop class.  Accepts the filepath to the drop image, the run info (specified through cmd line arguments), the start time of the run, and the frame number
 	 * (used to calculate the time that the frame happened).
 	 */
-	public Drop(File filePath,String runInfo,double time, double frameNumber, int pixelsPerCentimeter, int leftPlatformY, int rightPlatformY, int gradientThreshold,
+	public Drop(File filePath,String runInfo,double time, double frameNumber, int leftPlatformY, int rightPlatformY, int gradientThreshold,
 			int leftPlatformX, int rightPlatformX, boolean topSide, double currentTime){
 		startTime = time;
 		this.time=currentTime;//time+(double)(frameNumber/60);
 		this.runInfo=runInfo;//update with angles and width.  
 		this.filePath=filePath;
-		this.pixelsPerCentimeter=pixelsPerCentimeter;
+		this.pixelsPerCentimeter=Scaler.getScale();
 		System.out.println(this.time);
 
 		//makes a Buffered Image from the file at the filePath.
@@ -66,7 +66,7 @@ public class Drop{
 		
 		minImportantX=leftPlatformX-1;//600
 		maxImportantX=rightPlatformX+1;//img.getWidth()-800
-		minImportantY=leftPlatformY-60;//250
+		minImportantY=leftPlatformY-60;//-60
 		maxImportantY=rightPlatformY+30;//img.getHeight()-250
 		
 		if(!topSide){//if not a drop on the top, then flip the image and adjust the important area to account for the flip.
@@ -81,7 +81,7 @@ public class Drop{
 			
 			minImportantY = leftPlatformY-30;//correcting the important area.  was -30
 			maxImportantY = rightPlatformY+3;//because we just flipped the image across the horizontal center of the image.  was +60
-			
+//			img=ImageUtilities.supressFeatures(img,gradientThreshold,minImportantX,maxImportantX,minImportantY,maxImportantY);
 			
 		}
 
@@ -96,7 +96,7 @@ public class Drop{
 		leftDropLine=findLeftLine(img);
 		rightDropLine=findRightLine(img);
 		xL=findLeftContactPoint(img)[0];//leftDropLine.getX1()/pixelsPerCentimeter;
-		xR=findRightContactPoint(img)[1];//rightDropLine.getX1()/pixelsPerCentimeter;
+		xR=findRightContactPoint(img)[0];//rightDropLine.getX1()/pixelsPerCentimeter;
 		angleLeft=Math.abs(Lines.getAngleDegrees(blueLine,leftDropLine));
 		angleRight=Math.abs(Lines.getAngleDegrees(blueLine, rightDropLine));
 		width=(xR-xL)/pixelsPerCentimeter;
@@ -106,6 +106,7 @@ public class Drop{
 		img=imposeRightLine(img,rightDropLine,Color.GREEN);//(draw right line on drop)
 		img=imposeLeftLine(img,leftDropLine,Color.GREEN);//(draw left line on drop)
 		
+		//this is fun..
 		//write now edited image of drop to the designated filePath.
 		try {
 			ImageIO.write(img, "png", filePath);
@@ -167,21 +168,21 @@ public class Drop{
 	
 	private static int[] findRightContactPoint(BufferedImage bi){
 		int[] point={100,100};//-1,-1
-		Graphics2D g = bi.createGraphics();
-		g.setColor(new Color(255,165,0));
+//		Graphics2D g = bi.createGraphics();
+//		g.setColor(new Color(255,165,0));
 		for(int x=maxImportantX-10;x>minImportantX+10;x--){//raster over
 			for(int y=minImportantY;y<maxImportantY;y++){//the image      was +16, -16
 				if(ImageUtilities.isBlue(bi, x, y)){//to find the blue line
 						if(ImageUtilities.isRed(bi, x, y-1)){
-						//	g.drawLine(x, y, x, y);
+				//			g.drawLine(x, y, x, y);
 							boolean isOnDrop = true;
 							for(int rasterY=y-1;rasterY>y-5;rasterY--){
 								boolean yDropCheck=false;
 								
-								for(int rasterX = x-3; rasterX < x+3; rasterX++){//was x+4
+								for(int rasterX = x+2; rasterX > x-10; rasterX--){//was x+4
 									if(ImageUtilities.isRed(bi, rasterX, rasterY)){
 										yDropCheck = true;
-								//		g.drawLine(rasterX, rasterY, rasterX , rasterY);
+					//					g.drawLine(rasterX, rasterY, rasterX , rasterY);
 									}	
 								}
 								if(!yDropCheck){
@@ -267,14 +268,17 @@ public class Drop{
 
 	private Lines findRightLine(BufferedImage bi){
 		int[] p1 = findRightContactPoint(bi);//finds point 1
+		Graphics2D g = bi.createGraphics();
+		g.setColor(new Color(0,235,0));
 		
 //		Lines lineGroup[] = new Lines[10];
 		ArrayList<Lines> lineGroup = new ArrayList<>();
 		
 		
-		for(int i=5;i<=8;i++){
-			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]),p1[1]-i};
+		for(int i=5;i<=15;i++){
+			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]-1),p1[1]-i};
 			lineGroup.add(new Lines(p1,thisPoint));
+			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
 		}
 		
 		double avgM = Lines.getAverageSlope(lineGroup);
@@ -292,13 +296,13 @@ public class Drop{
 	private static int scanFromRight(BufferedImage bi, int y, int startX){
 		
 		int xPoint=-1;
-		Graphics2D g = bi.createGraphics();
-		g.setColor(new Color(157,235,233));
+//		Graphics2D g = bi.createGraphics();
+//		g.setColor(new Color(157,235,233));
 		for(int x=startX;x>minImportantX;x--){//rasters from right to left
 			try{
 				if(ImageUtilities.isRed(bi, x, y)){//looking for a red pixel
 				xPoint=x;
-				g.drawLine(x, y, x, y);
+//				g.drawLine(x, y, x, y);
 				x-=maxImportantX;
 				goodData=true;
 				break;
