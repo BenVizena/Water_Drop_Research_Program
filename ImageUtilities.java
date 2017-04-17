@@ -202,5 +202,19 @@ public final class ImageUtilities {
 	private static int getIntensity(BufferedImage image,int x,int y){
 		return (int)((getRedValue(image,x,y)+getBlueValue(image,x,y)+getGreenValue(image,x,y))/3);
 	}
+	
+	public static double getAvgIntensity(BufferedImage image, int x1, int y1, int x2, int y2){
+		double totalIntensity = 0;
+		
+		for(int x=Math.min(x1, x2);x<Math.max(x1, x2);x++)
+			for(int y=Math.min(y1, y2);y<Math.max(y1, y2);y++)
+				totalIntensity+=(double)getIntensity(image,x,y);
+		
+		
+			
+		
+		
+		return totalIntensity/((Math.max(x1, x2)-Math.min(x1, x2))*(Math.max(y1, y2)-Math.min(y1, y2)));
+	}
 }
 

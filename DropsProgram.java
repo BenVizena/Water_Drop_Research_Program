@@ -37,10 +37,16 @@ public class DropsProgram{
 		Java2DFrameConverter fc = new Java2DFrameConverter();
     	@SuppressWarnings("resource")
 		FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(mp4Path+"");//this takes several seconds for some reason.
+ //   	FFmpegFrameGrabber startTimeGrabber = new FFmpegFrameGrabber(mp4Path+"");
+ //   	startTimeGrabber.start();
+ //   	startTimeGrabber.setFrameNumber(0);
+ //   	Frame startFrame;
     	
     	frameGrabber.start();
     	frameGrabber.setFrameNumber((int)Math.floor(startTime*60));//sets the images to start being pulled at the specified start time.
     	Frame image;
+    	
+    	
     	
     	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
     	
@@ -49,6 +55,9 @@ public class DropsProgram{
     	int rightPlatformXInt = Integer.parseInt(rightPlatformX);
     	int leftPlatformXInt = Integer.parseInt(leftPlatformX);
     	
+    	double actualStartTime=DropsProgram.getStartingTime(mp4Path, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt);
+    	System.out.println(actualStartTime);
+//    	double actualStartTime =StartingTimeGetter.getStartTime(filePath);
     	
     	if(sideViewTop||sideViewBot){
     		Drop[] drops = new Drop[numFrames];
@@ -135,4 +144,46 @@ public class DropsProgram{
     private static int getNumFrames(double start, double finish){
 		return (int)Math.ceil((finish-start)*60);//camera operates at 60fps
     }  
+    
+    public static double getStartingTime(Path mp4Path, int x1, int y1, int x2, int y2) throws Exception{
+   		Java2DFrameConverter fc = new Java2DFrameConverter();
+    	@SuppressWarnings("resource")
+   		FFmpegFrameGrabber startTimeGrabber = new FFmpegFrameGrabber(mp4Path+"");
+   	   	startTimeGrabber.start();
+   	   	startTimeGrabber.setFrameNumber(0);
+   	   	Frame image;
+   	   	
+   	   	if(Math.abs(y2-y1)<50)
+   	   		y1=y1+100;
+   	   	
+   	   	double averageIntensity=0;
+   	   	
+   	   	boolean lightSeen = false;
+   	   	
+   	   	//find my average to compare to.
+   	   	for(int x=0;x<60;x++){
+   	   		image=startTimeGrabber.grabImage();
+   	   		BufferedImage bi = fc.getBufferedImage(image);
+   	   		averageIntensity+=ImageUtilities.getAvgIntensity(bi, x1, y1, x2, y2);
+   	   	}
+   	   	
+   	   	averageIntensity=averageIntensity/60;
+   	   	
+   	   	double loops=60;
+   	   	
+   	   	while(lightSeen==false){
+   	   		loops++;
+   	   		image=startTimeGrabber.grabImage();
+   	   		BufferedImage bi = fc.getBufferedImage(image);
+   	   		double thisAvgIntensity=ImageUtilities.getAvgIntensity(bi, x1, y1, x2, y2);
+   	   		if((thisAvgIntensity-averageIntensity)/averageIntensity >.03){
+   	   			lightSeen=true;
+   	   		}
+   	   		else{
+   	   			System.out.println("Frame number: "+ (loops/60)+" "+(thisAvgIntensity/averageIntensity-1));
+   	   		}
+   	   	}
+   	   	System.out.println(loops/60);
+   	   	return loops/60;
+   	}
 }
