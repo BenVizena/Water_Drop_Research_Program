@@ -75,7 +75,7 @@ public class DropsProgram{
             		Double currentTime = startTime+(double)i/60;
          //   		System.out.println(currentTime+" "+startTime+" "+i);
             		drops[i]=new Drop(filePath,runName,(startTime+i/60),i,leftPlatformYInt, rightPlatformYInt, intensityCutoffInt, leftPlatformXInt, rightPlatformXInt,
-            				sideViewTop,currentTime);//creates drop.
+            				sideViewTop,currentTime,actualStartTime);//creates drop.
             		bi.flush();
             	}
             	catch(Exception e){
@@ -88,10 +88,10 @@ public class DropsProgram{
             BufferedWriter writer = null;//makes the new bufferedwriter
             try {
                 writer = new BufferedWriter(new FileWriter(results));//instantiates the new bufferedwriter
-                writer.write("run_name,width,left_angle,right_angle,start_time,current_time,distance_to_left_edge,distance_to_right_edge,radial_distance,drop_number");//creates header
+                writer.write("run_name,width,left_angle,right_angle,start_time,current_time,distance_to_left_edge,distance_to_right_edge,radial_distance,drop_number,actualStartTime");//creates header
                 writer.newLine();
                 for(int i=0;i<numFrames;i++){
-                	writer.write(drops[i].toString()+","+(int)(i+1));//puts into from the drops below that header
+                	writer.write(drops[i].toString()+","+(int)(i+1)+","+actualStartTime);//puts into from the drops below that header
                 	writer.newLine();
                 }
             } finally {
@@ -111,7 +111,7 @@ public class DropsProgram{
             		ImageIO.write(bi, "png", filePath);//writes the image to the file that drop will use.
 
             		Double currentTime = startTime+(double)i/60;
-            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, currentTime, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt, intensityCutoffInt);
+            		drops[i]=new TopDrop(filePath,runName,(startTime+i/60),i, currentTime, leftPlatformXInt, leftPlatformYInt, rightPlatformXInt, rightPlatformYInt, intensityCutoffInt,actualStartTime);
             		bi.flush();
             	}
             	catch(Exception e){
@@ -124,10 +124,10 @@ public class DropsProgram{
             BufferedWriter writer = null;//makes the new bufferedwriter
             try {
                 writer = new BufferedWriter(new FileWriter(results));//instantiates the new bufferedwriter
-                writer.write("run_name,height,width,area,start_time,current_time,drop_number");//creates header
+                writer.write("run_name,height,width,area,start_time,current_time,drop_number,actual_start_time");//creates header
                 writer.newLine();
                 for(int i=0;i<numFrames;i++){
-                	writer.write(drops[i].toString()+","+(int)(i+1));//puts into from the drops below that header
+                	writer.write(drops[i].toString()+","+(int)(i+1)+","+actualStartTime);//puts into from the drops below that header
                 	writer.newLine();
                 }
             } finally {
@@ -176,7 +176,7 @@ public class DropsProgram{
    	   		image=startTimeGrabber.grabImage();
    	   		BufferedImage bi = fc.getBufferedImage(image);
    	   		double thisAvgIntensity=ImageUtilities.getAvgIntensity(bi, x1, y1, x2, y2);
-   	   		if((thisAvgIntensity-averageIntensity)/averageIntensity >.03){
+   	   		if((thisAvgIntensity-averageIntensity)/averageIntensity >.2){
    	   			lightSeen=true;
    	   		}
    	   		else{

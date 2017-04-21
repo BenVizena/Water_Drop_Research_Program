@@ -6,7 +6,10 @@ public class Scaler {
 	
 	public static int getScale(){//returns number of pixels in one centimeter
 		
-		int pixelsPerCentimeter=502;
+		//456 for side view
+		//354 for top view
+		
+		int pixelsPerCentimeter=456;
 			
 		return pixelsPerCentimeter;
 	}

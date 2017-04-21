@@ -33,6 +33,7 @@ public class Drop{
 	private double xL;
 	private double xR;
 	private int pixelsPerCentimeter;
+	private double actualStartTime;
 	
 	
 
@@ -48,8 +49,9 @@ public class Drop{
 	 * (used to calculate the time that the frame happened).
 	 */
 	public Drop(File filePath,String runInfo,double time, double frameNumber, int leftPlatformY, int rightPlatformY, int gradientThreshold,
-			int leftPlatformX, int rightPlatformX, boolean topSide, double currentTime){
+			int leftPlatformX, int rightPlatformX, boolean topSide, double currentTime, double actualStartTime){
 		startTime = time;
+		this.actualStartTime=actualStartTime;
 		this.time=currentTime;//time+(double)(frameNumber/60);
 		this.runInfo=runInfo;//update with angles and width.  
 		this.filePath=filePath;

@@ -145,7 +145,7 @@ public final class ImageUtilities {
 		
 		for(int x=0;x<img.getWidth();x++)//raster over
 			for(int y=0;y<img.getHeight();y++)//the important image pixels
-				if(getBrightness(img,x,y)>brightness_cutoff)//-36 for 1063
+				if(getBrightness(img,x,y)>brightness_cutoff-13)//-36 for 1063
 					img.setRGB(x, y, white_rgb);
 				else
 					img.setRGB(x, y, black_rgb);

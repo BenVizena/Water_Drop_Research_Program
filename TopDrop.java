@@ -28,6 +28,7 @@ public class TopDrop {
 	private static int maxImportantY=850;//950
 //	private final static int gradientThreshold=180;//180
 	private int gradientThreshold;
+	private double actualStartTime;
 	
 	@Override
 	public String toString(){
@@ -36,8 +37,9 @@ public class TopDrop {
 	
 	
 	public TopDrop(File filePath,String runName,double time, double frameNumber, double currentTime, int topLeftPlatformX, int topLeftPlatformY, int bottomRightPlatformX,
-			int bottomRightPlatformY, int gradThresh){
+			int bottomRightPlatformY, int gradThresh, double actualStartTime){
 		gradientThreshold = gradThresh;
+		this.actualStartTime=actualStartTime;
 		startTime = time;
 //		this.time=time+(double)(frameNumber/60);
 		this.time=currentTime;
