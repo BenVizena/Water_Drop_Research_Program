@@ -131,6 +131,7 @@ public final class ImageUtilities {
 	
 	public static BufferedImage supressFeatures(BufferedImage img, int gradCutoff, int minImportantX, int maxImportantX, int minImportantY, int maxImportantY){
 		img = toGrayScale(img);
+		img=gaussianFilter(img,minImportantX,maxImportantX,minImportantY,maxImportantY);
 		int white_rgb = new Color(255,255,255).getRGB();
 		int black_rgb = new Color(0,0,0).getRGB();
 		long totalBrightness = 0;
@@ -145,7 +146,7 @@ public final class ImageUtilities {
 		
 		for(int x=0;x<img.getWidth();x++)//raster over
 			for(int y=0;y<img.getHeight();y++)//the important image pixels
-				if(getBrightness(img,x,y)>brightness_cutoff-13)//-36 for 1063
+				if(getBrightness(img,x,y)>brightness_cutoff-5)//-36 for 1063//////////////
 					img.setRGB(x, y, white_rgb);
 				else
 					img.setRGB(x, y, black_rgb);

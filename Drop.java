@@ -278,7 +278,7 @@ public class Drop{
 		
 		
 		for(int i=5;i<=15;i++){
-			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]-1),p1[1]-i};
+			int thisPoint[] = {scanFromRight(bi,p1[1]-i,p1[0]-3),p1[1]-i};
 			lineGroup.add(new Lines(p1,thisPoint));
 			g.drawLine(thisPoint[0], thisPoint[1], thisPoint[0], thisPoint[1]);
 		}

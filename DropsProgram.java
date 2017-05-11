@@ -47,6 +47,16 @@ public class DropsProgram{
     	Frame image;
     	
     	
+    	int numberOfPixelsMovedOnLeft = 3;
+    	int numberOfPixelsMovedOnRight = 3;
+    	int timeOfRun = 7000;//in seconds
+  //  	double stepsToMoveLeftPixel = numberOfPixelsMovedOnLeft/(timeOfRun*60);
+  //  	double stepsToMoveRightPixel = numberOfPixelsMovedOnRight/(timeOfRun*60);
+    	double stepsToMoveLeftPixel = (timeOfRun*60)/numberOfPixelsMovedOnLeft;
+    	double stepsToMoveRightPixel = (timeOfRun*60)/numberOfPixelsMovedOnRight;
+    	System.out.println("DLKFJSKLFJSDLF "+stepsToMoveRightPixel);
+    	
+    	
     	
     	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
     	
@@ -63,10 +73,22 @@ public class DropsProgram{
     		Drop[] drops = new Drop[numFrames];
     		
     //    	int intensityCutoffInt=Integer.parseInt(intensityCutoff);
-        	
+        	int counterLeft=0;
+        	int counterRight=0;
     		
     		for (int i = 0; i < numFrames; i++) {
+    			counterLeft++;
+    			counterRight++;
             	try{
+            		if(counterLeft >= stepsToMoveLeftPixel){
+            			counterLeft=0;
+            			System.out.println("MOVED");
+            			leftPlatformYInt +=1;
+            		}
+            		if(counterRight >= stepsToMoveRightPixel){
+            			counterRight=0;
+            			rightPlatformYInt +=1;
+            		}
             		image=frameGrabber.grabImage();
             		BufferedImage bi = fc.getBufferedImage(image);
             		int nameNumber = i+1;//so drop names start at d1 instead of d0
